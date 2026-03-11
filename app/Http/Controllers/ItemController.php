@@ -29,6 +29,7 @@ class ItemController extends Controller
             'id' => $item->id,
             'type' => $item->type,
             'title' => $item->title,
+            'parent' => $item->parent,
             'parent_id' => $item->parent_id,
             'heading_id' => $item->heading_id,
             'is_inbox' => $item->is_inbox,

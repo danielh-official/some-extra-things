@@ -29,6 +29,7 @@ class StoreItemRequest extends FormRequest
             'id' => ['required', 'string'],
             'type' => ['required', 'string', Rule::in(['To-Do', 'Heading', 'Project', 'Area'])],
             'title' => ['required', 'string', 'max:255'],
+            'parent' => ['nullable', 'string'],
 
             'parent_id' => ['nullable', 'string'],
             'heading_id' => ['nullable', 'string'],
