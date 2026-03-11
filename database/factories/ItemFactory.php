@@ -19,7 +19,7 @@ class ItemFactory extends Factory
     {
         return [
             'id' => (string) \Illuminate\Support\Str::uuid(),
-            'type' => fake()->randomElement(['todo', 'heading', 'project', 'area']),
+            'type' => fake()->randomElement(['To-Do', 'Heading', 'Project', 'Area']),
             'title' => fake()->sentence(3),
             'parent_id' => null,
             'heading_id' => null,
@@ -31,7 +31,7 @@ class ItemFactory extends Factory
             'deadline' => null,
             'tags' => [],
             'all_matching_tags' => [],
-            'status' => 'open',
+            'status' => 'Open',
             'completion_date' => null,
             'is_logged' => false,
             'notes' => null,
