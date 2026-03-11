@@ -91,7 +91,7 @@ test('can update a smart list', function () {
 
     $response = $this->put(route('smart-lists.update', $smartList), $payload);
 
-    $response->assertRedirect(route('smart-lists.index'));
+    $response->assertRedirect(route('smart-lists.show', $smartList));
 
     $this->assertDatabaseHas('smart_lists', [
         'id' => $smartList->id,
