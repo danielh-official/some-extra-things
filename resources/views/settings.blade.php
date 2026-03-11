@@ -6,18 +6,23 @@
         <div class="mb-4 border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm bg-[#FDFDFC] dark:bg-[#161615]">
             <div class="p-10 flex flex-col gap-2">
                 <div class="flex items-center justify-between mb-2">
-                    <div>
-                        <p class="mt-1">
-                        <p class="text-[#706f6c] dark:text-[#A1A09A] ml-1">create / upsert</p>
-                        <code
-                            class="px-1.5 py-0.5 rounded-sm bg-[#fff2f2] dark:bg-[#1D0002] border border-[#e3e3e0] dark:border-[#3E3E3A]">POST {{ url('/') }}/api/items</code>
-                        </p>
-                        <p class="mt-1">
-                        <p class="text-[#706f6c] dark:text-[#A1A09A] ml-1">update</p>
-                        <code
-                            class="px-1.5 py-0.5 rounded-sm bg-[#fff2f2] dark:bg-[#1D0002] border border-[#e3e3e0] dark:border-[#3E3E3A]">PUT {{ url('/') }}/api/items/{id}</code>
-                        </p>
-                        </p>
+                    <div class="flex flex-col gap-2">
+                        <div>
+                            <p class="text-[#706f6c] dark:text-[#A1A09A] ml-1">get all items</p>
+                            <code
+                                class="px-1.5 py-0.5 rounded-sm bg-[#fff2f2] dark:bg-[#1D0002] border border-[#e3e3e0] dark:border-[#3E3E3A]">GET {{ url('/') }}/api/items</code>
+                        </div>
+                        <div>
+                            <p class="text-[#706f6c] dark:text-[#A1A09A] ml-1">create / upsert</p>
+                            <code
+                                class="px-1.5 py-0.5 rounded-sm bg-[#fff2f2] dark:bg-[#1D0002] border border-[#e3e3e0] dark:border-[#3E3E3A]">POST {{ url('/') }}/api/items</code>
+                        </div>
+                        <div>
+                            <p class="text-[#706f6c] dark:text-[#A1A09A] ml-1">update</p>
+                            <code
+                                class="px-1.5 py-0.5 rounded-sm bg-[#fff2f2] dark:bg-[#1D0002] border border-[#e3e3e0] dark:border-[#3E3E3A]">PUT {{ url('/') }}/api/items/{id}</code>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
