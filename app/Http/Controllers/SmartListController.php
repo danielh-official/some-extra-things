@@ -83,7 +83,7 @@ class SmartListController extends Controller
         $smartList->update($request->validated());
 
         return redirect()
-            ->route('smart-lists.index')
+            ->route('smart-lists.show', $smartList)
             ->with('status', 'Smart list updated.');
     }
 
