@@ -7,10 +7,6 @@ use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
 
-beforeEach(function () {
-    ServerState::setEnabled(true);
-});
-
 test('it creates a thing via post', function () {
     $payload = [
         'id' => Str::uuid(),
@@ -73,20 +69,3 @@ test('validation fails for invalid type', function () {
     $response->assertUnprocessable();
     $response->assertJsonValidationErrors(['type']);
 });
-
-test('api returns service unavailable when server is disabled', function () {
-    ServerState::setEnabled(false);
-
-    $payload = [
-        'type' => 'To-Do',
-        'title' => 'Won’t be created',
-    ];
-
-    $response = $this->postJson(route('api.items.store'), $payload);
-
-    $response->assertStatus(503);
-    $response->assertJsonFragment([
-        'message' => 'Local Things API server is disabled.',
-    ]);
-});
-

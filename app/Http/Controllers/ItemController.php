@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreItemRequest;
+use App\Http\Resources\ItemCollection;
+use App\Http\Resources\ItemResource;
 use App\Models\Item;
 use App\Models\Tag;
 use Illuminate\Http\JsonResponse;
@@ -25,34 +27,9 @@ class ItemController extends Controller
 
         $this->syncTags($item, $validated);
 
-        $data = [
-            'id' => $item->id,
-            'type' => $item->type,
-            'title' => $item->title,
-            'parent' => $item->parent,
-            'parent_id' => $item->parent_id,
-            'heading_id' => $item->heading_id,
-            'is_inbox' => $item->is_inbox,
-            'start' => $item->start,
-            'start_date' => $item->start_date?->toDateString(),
-            'evening' => $item->evening,
-            'reminder_date' => $item->reminder_at?->toIso8601String(),
-            'deadline' => $item->deadline_at?->toDateString(),
-            'tags' => $item->tags ?? [],
-            'all_matching_tags' => $item->all_matching_tags ?? [],
-            'status' => $item->status,
-            'completion_date' => $item->completed_at?->toIso8601String(),
-            'is_logged' => $item->is_logged,
-            'notes' => $item->notes,
-            'checklist' => $item->checklist ?? [],
-            'creation_date' => $item->creation_date?->toIso8601String(),
-            'modification_date' => $item->modification_date?->toIso8601String(),
-        ];
-
-        return response()->json(
-            $data,
-            $create ? 201 : 200
-        );
+        return (new ItemResource($item))
+            ->response()
+            ->setStatusCode($create ? 201 : 200);
     }
 
     /**
@@ -90,5 +67,12 @@ class ItemController extends Controller
         }
 
         $item->tags()->sync($tagIds);
+    }
+
+    public function index(): JsonResponse
+    {
+        $items = Item::all();
+
+        return (new ItemCollection($items))->response();
     }
 }
