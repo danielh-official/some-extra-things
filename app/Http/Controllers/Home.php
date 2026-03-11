@@ -13,10 +13,15 @@ class Home extends Controller
      */
     public function __invoke(Request $request)
     {
-        $items = Item::where('status', 'Open')->orderBy('creation_date', 'desc')->get();
+        $grouped = Item::where('status', 'Open')
+            ->orderBy('creation_date', 'desc')
+            ->get()
+            ->groupBy('parent');
+
+        // dd($grouped->toArray());
 
         $tags = Tag::orderBy('name')->get();
 
-        return view('home', compact('items', 'tags'));
+        return view('home', compact('grouped', 'tags'));
     }
 }
