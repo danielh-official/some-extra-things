@@ -24,14 +24,14 @@ return new class extends Migration
             $table->string('start')->nullable();
             $table->date('start_date')->nullable();
             $table->boolean('evening')->default(false);
-            $table->dateTime('reminder_at')->nullable();
-            $table->date('deadline_at')->nullable();
+            $table->dateTime('reminder_date')->nullable();
+            $table->date('deadline')->nullable();
 
             $table->json('tags')->nullable();
             $table->json('all_matching_tags')->nullable();
 
             $table->string('status')->default('open');
-            $table->dateTime('completed_at')->nullable();
+            $table->dateTime('completion_date')->nullable();
             $table->boolean('is_logged')->default(false);
 
             $table->text('notes')->nullable();

@@ -92,17 +92,17 @@ class StoreItemRequest extends FormRequest
         $isInbox = $this->input('is_inbox');
 
         if (is_string($isInbox)) {
-            $data['is_inbox'] = $isInbox === 'yes';
+            $data['is_inbox'] = $isInbox === 'Yes';
         }
 
         $isEvening = $this->input('evening');
         if (is_string($isEvening)) {
-            $data['evening'] = $isEvening === 'yes';
+            $data['evening'] = $isEvening === 'Yes';
         }
 
         $isLogged = $this->input('is_logged');
         if (is_string($isLogged)) {
-            $data['is_logged'] = $isLogged === 'yes';
+            $data['is_logged'] = $isLogged === 'Yes';
         }
 
         $startDate = $this->input('start_date');
@@ -112,17 +112,17 @@ class StoreItemRequest extends FormRequest
 
         $reminderDate = $this->input('reminder_date');
         if (is_string($reminderDate)) {
-            $data['reminder_at'] = Carbon::parse($reminderDate);
+            $data['reminder_date'] = Carbon::parse($reminderDate);
         }
 
         $deadlineDate = $this->input('deadline');
         if (is_string($deadlineDate)) {
-            $data['deadline_at'] = Carbon::parse($deadlineDate);
+            $data['deadline'] = Carbon::parse($deadlineDate);
         }
 
         $completionDate = $this->input('completion_date');
         if (is_string($completionDate)) {
-            $data['completed_at'] = Carbon::parse($completionDate);
+            $data['completion_date'] = Carbon::parse($completionDate);
         }
 
         $modificationDate = $this->input('modification_date');

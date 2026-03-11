@@ -13,7 +13,7 @@ class Home extends Controller
      */
     public function __invoke(Request $request)
     {
-        $items = Item::orderBy('created_at', 'desc')->get();
+        $items = Item::where('status', 'Open')->orderBy('creation_date', 'desc')->get();
 
         $tags = Tag::orderBy('name')->get();
 

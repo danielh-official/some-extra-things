@@ -1,9 +1,7 @@
 <?php
 
 use App\Http\Controllers\Home;
-use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ToggleServerState;
-use App\Http\Middleware\EnsureApiServerEnabled;
 use App\Support\ServerState;
 use Illuminate\Support\Facades\Route;
 
