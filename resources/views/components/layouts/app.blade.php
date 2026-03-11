@@ -19,6 +19,7 @@
     <header>
         <nav class="flex w-full gap-4">
             <a href="{{ route('home') }}" class="text-sm font-medium text-center">Home</a>
+            <a href="{{ route('smart-lists.index') }}" class="text-sm font-medium text-center">Smart lists</a>
             <a href="{{ route('settings') }}" class="text-sm font-medium text-center">Settings</a>
         </nav>
     </header>

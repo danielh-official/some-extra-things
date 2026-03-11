@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Home;
+use App\Http\Controllers\SmartListController;
 use App\Http\Controllers\ToggleServerState;
 use App\Support\ServerState;
 use Illuminate\Support\Facades\Route;
@@ -15,3 +16,5 @@ Route::get('/settings', function () {
 
 Route::post('/server/toggle', ToggleServerState::class)
     ->name('server.toggle');
+
+Route::resource('smart-lists', SmartListController::class);
