@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Item;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Item>
@@ -18,7 +19,7 @@ class ItemFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'id' => (string) Str::uuid(),
             'type' => fake()->randomElement(['To-Do', 'Heading', 'Project', 'Area']),
             'title' => fake()->sentence(3),
             'parent_id' => null,
