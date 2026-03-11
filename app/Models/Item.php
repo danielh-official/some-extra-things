@@ -33,6 +33,7 @@ class Item extends Model
         'id',
         'type',
         'title',
+        'parent',
         'parent_id',
         'heading_id',
         'is_inbox',
