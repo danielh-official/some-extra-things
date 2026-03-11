@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('type');
             $table->string('title');
 
+            $table->string('parent')->nullable();
             $table->string('parent_id')->nullable();
             $table->string('heading_id')->nullable();
 
@@ -30,7 +31,7 @@ return new class extends Migration
             $table->json('tags')->nullable();
             $table->json('all_matching_tags')->nullable();
 
-            $table->string('status')->default('open');
+            $table->string('status')->default('Open');
             $table->dateTime('completion_date')->nullable();
             $table->boolean('is_logged')->default(false);
 
