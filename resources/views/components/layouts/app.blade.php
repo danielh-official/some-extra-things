@@ -18,9 +18,9 @@
 <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] flex flex-col p-6 gap-4">
     <header>
         <nav class="flex w-full gap-4">
-            <a href="{{ route('home') }}" class="text-sm font-medium text-center">Home</a>
-            <a href="{{ route('smart-lists.index') }}" class="text-sm font-medium text-center">Smart lists</a>
-            <a href="{{ route('settings') }}" class="text-sm font-medium text-center">Settings</a>
+            <a href="{{ route('home') }}" class="text-sm font-medium text-center {{ request()->routeIs('home') ? 'text-[#1b1b18] dark:text-white underline' : 'text-[#706f6c] dark:text-[#8a8a7f] hover:text-[#1b1b18] dark:hover:text-white' }}">Home</a>
+            <a href="{{ route('smart-lists.index') }}" class="text-sm font-medium text-center {{ request()->routeIs('smart-lists.*') ? 'text-[#1b1b18] dark:text-white underline' : 'text-[#706f6c] dark:text-[#8a8a7f] hover:text-[#1b1b18] dark:hover:text-white' }}">Smart lists</a>
+            <a href="{{ route('settings') }}" class="text-sm font-medium text-center {{ request()->routeIs('settings') ? 'text-[#1b1b18] dark:text-white underline' : 'text-[#706f6c] dark:text-[#8a8a7f] hover:text-[#1b1b18] dark:hover:text-white' }}">Settings</a>
         </nav>
     </header>
     <main class="w-full justify-center items-center flex">
