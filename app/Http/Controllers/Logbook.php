@@ -12,10 +12,12 @@ class Logbook extends Controller
      */
     public function __invoke(Request $request)
     {
-        $items = Item::where('is_logged', true)
+        $grouped = Item::where('is_logged', true)
             ->orderBy('completion_date', 'desc')
-            ->get();
+            ->get()
+            ->groupBy(fn (Item $item) => $item->completion_date?->toDateString() ?? 'Unknown')
+            ->sortKeysDesc();
 
-        return view('logbook', compact('items'));
+        return view('logbook', compact('grouped'));
     }
 }

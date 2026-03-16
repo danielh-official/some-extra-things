@@ -152,12 +152,35 @@ it('shows someday items on /someday', function () {
 });
 
 it('shows logged items on /logbook', function () {
-    $loggedItem = Item::factory()->create(['is_logged' => true]);
+    $loggedItem = Item::factory()->create(['is_logged' => true, 'completion_date' => now()]);
     $notLoggedItem = Item::factory()->create(['is_logged' => false]);
 
     $this->get('/logbook')
         ->assertSee($loggedItem->title)
         ->assertDontSee($notLoggedItem->title);
+});
+
+it('groups logbook items by completion date descending', function () {
+    $older = Item::factory()->create(['is_logged' => true, 'completion_date' => now()->subDays(2)]);
+    $newer = Item::factory()->create(['is_logged' => true, 'completion_date' => now()->subDay()]);
+
+    $response = $this->get('/logbook');
+    $content = $response->getContent();
+
+    $response->assertSee($newer->title)->assertSee($older->title);
+    expect(strpos($content, $newer->title))->toBeLessThan(strpos($content, $older->title));
+});
+
+it('shows checkmark icon for completed items in logbook', function () {
+    Item::factory()->create(['is_logged' => true, 'status' => 'Completed', 'completion_date' => now()]);
+
+    $this->get('/logbook')->assertSee('evenodd');
+});
+
+it('shows x-mark icon for cancelled items in logbook', function () {
+    Item::factory()->create(['is_logged' => true, 'status' => 'Cancelled', 'completion_date' => now()]);
+
+    $this->get('/logbook')->assertSee('evenodd');
 });
 
 it('shows cancelled items on /trash', function () {
