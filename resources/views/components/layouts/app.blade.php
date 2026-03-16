@@ -15,15 +15,33 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] flex flex-col p-6 gap-4">
-    <header>
-        <nav class="flex w-full gap-4">
-            <a href="{{ route('home') }}" class="text-sm font-medium text-center {{ request()->routeIs('home') ? 'text-[#1b1b18] dark:text-white underline' : 'text-[#706f6c] dark:text-[#8a8a7f] hover:text-[#1b1b18] dark:hover:text-white' }}">Home</a>
-            <a href="{{ route('smart-lists.index') }}" class="text-sm font-medium text-center {{ request()->routeIs('smart-lists.*') ? 'text-[#1b1b18] dark:text-white underline' : 'text-[#706f6c] dark:text-[#8a8a7f] hover:text-[#1b1b18] dark:hover:text-white' }}">Smart lists</a>
-            <a href="{{ route('settings') }}" class="text-sm font-medium text-center {{ request()->routeIs('settings') ? 'text-[#1b1b18] dark:text-white underline' : 'text-[#706f6c] dark:text-[#8a8a7f] hover:text-[#1b1b18] dark:hover:text-white' }}">Settings</a>
-        </nav>
-    </header>
-    <main class="w-full justify-center items-center flex">
+<body class="flex h-screen overflow-hidden bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-white">
+    <aside class="w-52 shrink-0 flex flex-col border-r border-[#e5e5e5] dark:border-[#2a2a28] p-3 gap-1">
+        <x-sidebar-link href="{{ route('inbox') }}" :active="request()->routeIs('inbox')">Inbox</x-sidebar-link>
+        <x-sidebar-link href="{{ route('today') }}" :active="request()->routeIs('today')">Today</x-sidebar-link>
+        <x-sidebar-link href="{{ route('upcoming') }}" :active="request()->routeIs('upcoming')">Upcoming</x-sidebar-link>
+        <x-sidebar-link href="{{ route('anytime') }}" :active="request()->routeIs('anytime')">Anytime</x-sidebar-link>
+        <x-sidebar-link href="{{ route('someday') }}" :active="request()->routeIs('someday')">Someday</x-sidebar-link>
+        <x-sidebar-link href="{{ route('all') }}" :active="request()->routeIs('all')">All</x-sidebar-link>
+        <x-sidebar-link href="{{ route('logbook') }}" :active="request()->routeIs('logbook')">Logbook</x-sidebar-link>
+        <x-sidebar-link href="{{ route('trash') }}" :active="request()->routeIs('trash')">Trash</x-sidebar-link>
+
+        @if ($sidebarSmartLists->isNotEmpty())
+            <hr class="border-[#e5e5e5] dark:border-[#2a2a28] my-1" />
+            @foreach ($sidebarSmartLists as $smartList)
+                <x-sidebar-link href="{{ route('smart-lists.show', $smartList) }}" :active="request()->routeIs('smart-lists.show') && request()->route('smart_list')?->is($smartList)">
+                    {{ $smartList->name }}
+                </x-sidebar-link>
+            @endforeach
+        @endif
+
+        <div class="flex-1"></div>
+
+        <hr class="border-[#e5e5e5] dark:border-[#2a2a28] my-1" />
+        <x-sidebar-link href="{{ route('smart-lists.index') }}" :active="request()->routeIs('smart-lists.index')">Smart Lists</x-sidebar-link>
+        <x-sidebar-link href="{{ route('settings') }}" :active="request()->routeIs('settings')">Settings</x-sidebar-link>
+    </aside>
+    <main class="flex-1 overflow-y-auto p-6">
         {{ $slot }}
     </main>
 </body>
