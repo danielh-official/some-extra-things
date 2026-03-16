@@ -18,6 +18,9 @@ class Today extends Controller
             ->orderBy('start_date')
             ->get();
 
-        return view('today', compact('items'));
+        $todayItems = $items->where('evening', false);
+        $eveningItems = $items->where('evening', true);
+
+        return view('today', compact('todayItems', 'eveningItems'));
     }
 }

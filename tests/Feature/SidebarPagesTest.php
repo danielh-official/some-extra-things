@@ -61,6 +61,21 @@ it('shows today items on /today', function () {
         ->assertDontSee($noDateItem->title);
 });
 
+it('separates evening items under This Evening header on /today', function () {
+    $regularItem = Item::factory()->create(['status' => 'Open', 'start_date' => today(), 'evening' => false]);
+    $eveningItem = Item::factory()->create(['status' => 'Open', 'start_date' => today(), 'evening' => true]);
+
+    $response = $this->get('/today');
+
+    $response->assertSee($regularItem->title)
+        ->assertSee($eveningItem->title)
+        ->assertSee('This Evening');
+
+    $content = $response->getContent();
+    expect(strpos($content, $regularItem->title))->toBeLessThan(strpos($content, 'This Evening'));
+    expect(strpos($content, $eveningItem->title))->toBeGreaterThan(strpos($content, 'This Evening'));
+});
+
 it('shows upcoming items on /upcoming', function () {
     $futureItem = Item::factory()->create(['status' => 'Open', 'start_date' => today()->addDay()]);
     $todayItem = Item::factory()->create(['status' => 'Open', 'start_date' => today()]);
