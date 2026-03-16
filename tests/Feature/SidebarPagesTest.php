@@ -85,6 +85,52 @@ it('shows upcoming items on /upcoming', function () {
         ->assertDontSee($todayItem->title);
 });
 
+it('groups upcoming items by start date', function () {
+    $day1 = Item::factory()->create(['status' => 'Open', 'start_date' => today()->addDays(1)]);
+    $day2 = Item::factory()->create(['status' => 'Open', 'start_date' => today()->addDays(2)]);
+
+    $response = $this->get('/upcoming');
+    $content = $response->getContent();
+
+    $response->assertSee($day1->title)->assertSee($day2->title);
+    expect(strpos($content, $day1->title))->toBeLessThan(strpos($content, $day2->title));
+});
+
+it('includes items with no start_date but a future deadline in upcoming', function () {
+    $deadlineOnly = Item::factory()->create(['status' => 'Open', 'start_date' => null, 'deadline' => today()->addDays(3)]);
+    $noDate = Item::factory()->create(['status' => 'Open', 'start_date' => null, 'deadline' => null]);
+
+    $this->get('/upcoming')
+        ->assertSee($deadlineOnly->title)
+        ->assertDontSee($noDate->title);
+});
+
+it('groups deadline-only items by deadline date', function () {
+    $deadlineItem = Item::factory()->create(['status' => 'Open', 'start_date' => null, 'deadline' => today()->addDays(4)]);
+    $startDateItem = Item::factory()->create(['status' => 'Open', 'start_date' => today()->addDays(2), 'deadline' => null]);
+
+    $response = $this->get('/upcoming');
+    $content = $response->getContent();
+
+    $response->assertSee($startDateItem->title)->assertSee($deadlineItem->title);
+    expect(strpos($content, $startDateItem->title))->toBeLessThan(strpos($content, $deadlineItem->title));
+});
+
+it('groups item with both start_date and deadline by start_date', function () {
+    $item = Item::factory()->create([
+        'status' => 'Open',
+        'start_date' => today()->addDays(2),
+        'deadline' => today()->addDays(5),
+    ]);
+
+    $response = $this->get('/upcoming');
+    $content = $response->getContent();
+
+    $response->assertSee($item->title);
+    $expectedHeader = today()->addDays(2)->format('l, F j');
+    $response->assertSee($expectedHeader);
+});
+
 it('shows anytime items on /anytime', function () {
     $anytimeItem = Item::factory()->create(['status' => 'Open', 'start' => 'anytime', 'is_inbox' => false]);
     $somedayItem = Item::factory()->create(['status' => 'Open', 'start' => 'someday', 'is_inbox' => false]);

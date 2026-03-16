@@ -13,11 +13,22 @@ class Upcoming extends Controller
     public function __invoke(Request $request)
     {
         $items = Item::where('status', 'Open')
-            ->whereNotNull('start_date')
-            ->where('start_date', '>', today())
+            ->where(function ($query) {
+                $query->where('start_date', '>', today())
+                    ->orWhere(function ($query) {
+                        $query->whereNull('start_date')
+                            ->whereNotNull('deadline')
+                            ->where('deadline', '>', today());
+                    });
+            })
             ->orderBy('start_date')
+            ->orderBy('deadline')
             ->get();
 
-        return view('upcoming', compact('items'));
+        $grouped = $items
+            ->groupBy(fn (Item $item) => ($item->start_date ?? $item->deadline)->toDateString())
+            ->sortKeys();
+
+        return view('upcoming', compact('grouped'));
     }
 }
