@@ -12,8 +12,8 @@ class Someday extends Controller
      */
     public function __invoke(Request $request)
     {
-        $items = Item::where('status', 'Open')
-            ->where('start', 'someday')
+        $items = Item::notTrashed()->where('status', 'Open')
+            ->where('start', 'Someday')
             ->orderBy('creation_date', 'desc')
             ->get();
 

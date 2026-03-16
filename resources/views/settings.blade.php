@@ -27,5 +27,20 @@
                 </div>
             </div>
         </div>
+
+        <div class="mt-6 pt-6 border-t border-[#e3e3e0] dark:border-[#3E3E3A] flex items-center justify-between">
+            <div>
+                <p class="text-[#706f6c] dark:text-[#A1A09A]">Move all items to Trash.</p>
+            </div>
+            <form method="POST" action="{{ route('settings.items.destroy') }}"
+                onsubmit="return confirm('Are you sure you want to move items to the trash? They can be recovered.');">
+                @csrf
+                @method('DELETE')
+                <button type="submit"
+                    class="inline-block px-3 py-1 bg-transparent text-xs text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm hover:bg-[#f5f5f2] dark:hover:bg-[#161615] transition-all cursor-pointer">
+                    Trash All Items
+                </button>
+            </form>
+        </div>
     </div>
 </x-layouts.app>

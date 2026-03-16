@@ -1,6 +1,19 @@
 <x-layouts.app>
     <div class="flex flex-col gap-2 w-full max-w-2xl">
-        <h1 class="text-sm font-medium mb-2">Trash</h1>
+        <div class="flex items-center justify-between mb-2">
+            <h1 class="text-sm font-medium">Trash</h1>
+            @if ($items->isNotEmpty())
+                <form method="POST" action="{{ route('trash.items.destroy') }}"
+                    onsubmit="return confirm('Permanently delete all trashed items? This cannot be undone.');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit"
+                        class="inline-block px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-sm text-xs transition-colors cursor-pointer">
+                        Permanently Delete All
+                    </button>
+                </form>
+            @endif
+        </div>
         @forelse ($items as $item)
             <x-item-row :item="$item" />
         @empty

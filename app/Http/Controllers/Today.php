@@ -12,7 +12,7 @@ class Today extends Controller
      */
     public function __invoke(Request $request)
     {
-        $items = Item::where('status', 'Open')
+        $items = Item::notTrashed()->where('status', 'Open')
             ->whereNotNull('start_date')
             ->where('start_date', '<=', today())
             ->orderBy('start_date')

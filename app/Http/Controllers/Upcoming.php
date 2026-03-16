@@ -12,7 +12,7 @@ class Upcoming extends Controller
      */
     public function __invoke(Request $request)
     {
-        $items = Item::where('status', 'Open')
+        $items = Item::notTrashed()->where('status', 'Open')
             ->where(function ($query) {
                 $query->where('start_date', '>', today())
                     ->orWhere(function ($query) {

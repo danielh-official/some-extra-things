@@ -20,7 +20,7 @@ class ItemController extends Controller
 
         $item = Item::updateOrCreate([
             'id' => $validated['id'],
-        ], $validated);
+        ], array_merge($validated, ['is_trashed' => false]));
 
         // Check if this was an update
         $create = $item->wasRecentlyCreated;

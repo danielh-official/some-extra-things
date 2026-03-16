@@ -12,7 +12,7 @@ class Logbook extends Controller
      */
     public function __invoke(Request $request)
     {
-        $grouped = Item::where('is_logged', true)
+        $grouped = Item::notTrashed()->where('is_logged', true)
             ->orderBy('completion_date', 'desc')
             ->get()
             ->groupBy(fn (Item $item) => $item->completion_date?->toDateString() ?? 'Unknown')

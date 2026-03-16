@@ -35,7 +35,7 @@ class SmartList extends Model
      */
     public function itemsQuery(): Builder
     {
-        $query = Item::query()
+        $query = Item::notTrashed()
             ->where('status', 'Open');
 
         $criteria = $this->criteria;

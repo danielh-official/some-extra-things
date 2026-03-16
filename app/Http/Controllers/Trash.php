@@ -12,7 +12,7 @@ class Trash extends Controller
      */
     public function __invoke(Request $request)
     {
-        $items = Item::where('status', 'Cancelled')
+        $items = Item::where('is_trashed', true)
             ->orderBy('modification_date', 'desc')
             ->get();
 

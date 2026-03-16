@@ -31,9 +31,11 @@
                     <li style="margin-top:20px;">
                         <x-sidebar-link href="{{ route('logbook') }}" :active="request()->routeIs('logbook')">Logbook</x-sidebar-link>
                     </li>
-                    <li>
-                        <x-sidebar-link href="{{ route('trash') }}" :active="request()->routeIs('trash')">Trash</x-sidebar-link>
-                    </li>
+                    @if (\App\Models\Item::query()->where('is_trashed', true)->count() > 0)
+                        <li>
+                            <x-sidebar-link href="{{ route('trash') }}" :active="request()->routeIs('trash')">Trash</x-sidebar-link>
+                        </li>
+                    @endif
                 </ul>
                 <ul style="margin-top:20px;">
                     <li>

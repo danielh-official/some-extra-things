@@ -12,7 +12,7 @@ class Inbox extends Controller
      */
     public function __invoke(Request $request)
     {
-        $items = Item::where('is_inbox', true)
+        $items = Item::notTrashed()->where('is_inbox', true)
             ->where('status', 'Open')
             ->orderBy('creation_date', 'desc')
             ->get();

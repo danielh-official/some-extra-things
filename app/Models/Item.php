@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -47,6 +48,7 @@ class Item extends Model
         'status',
         'completion_date',
         'is_logged',
+        'is_trashed',
         'notes',
         'checklist',
         'creation_date',
@@ -62,6 +64,7 @@ class Item extends Model
             'is_inbox' => 'bool',
             'evening' => 'bool',
             'is_logged' => 'bool',
+            'is_trashed' => 'bool',
             'start_date' => 'date',
             'reminder_date' => 'datetime',
             'deadline' => 'date',
@@ -72,6 +75,14 @@ class Item extends Model
             'creation_date' => 'datetime',
             'modification_date' => 'datetime',
         ];
+    }
+
+    /**
+     * Scope a query to exclude trashed items.
+     */
+    public function scopeNotTrashed(Builder $query): void
+    {
+        $query->where(fn (Builder $q) => $q->where('is_trashed', false)->orWhereNull('is_trashed'));
     }
 
     /**
