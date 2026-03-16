@@ -5,6 +5,7 @@
         @include('smart-lists.form', [
             'smartList' => $smartList,
             'heading' => 'Edit smart list',
+            'cancelLink' => route('smart-lists.show', $smartList)
         ])
     </form>
 </x-layouts.app>

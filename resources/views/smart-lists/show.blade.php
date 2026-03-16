@@ -1,5 +1,9 @@
 <x-layouts.app>
-    <div class="flex flex-col gap-4 w-full max-w-2xl">
+    <div class="flex flex-col gap-4 w-full">
+        <div>
+            <a href="{{ route('smart-lists.index') }}">&larr; Go Back</a>
+        </div>
+        
         <div class="flex items-center justify-between">
             <div class="flex flex-col">
                 <h1 class="text-sm font-medium">{{ $smartList->name }}</h1>
@@ -27,14 +31,7 @@
         </div>
 
         @forelse ($items as $item)
-            <div
-                class="bg-white dark:bg-[#161615] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-lg p-4 lg:p-6">
-                <h2 class="text-sm font-medium">
-                    <a href="things:///show?id={{ $item->id }}">
-                        {{ $item->title }}
-                    </a>
-                </h2>
-            </div>
+            <x-item-row :item="$item" />
         @empty
             <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">
                 No matching items.

@@ -2,6 +2,10 @@
     /** @var \App\Models\SmartList $smartList */
 @endphp
 
+@props([
+    'cancelLink' => route('smart-lists.index')
+])
+
 <div
     class="w-full max-w-2xl text-[13px] leading-[20px] bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-lg p-6 lg:p-8 flex flex-col gap-4">
     <div class="flex items-center justify-between">
@@ -44,7 +48,7 @@
     </div>
 
     <div class="flex items-center justify-between mt-2">
-        <a href="{{ route('smart-lists.index') }}" class="text-xs text-[#706f6c] dark:text-[#A1A09A]">
+        <a href="{{ $cancelLink }}" class="text-xs text-[#706f6c] dark:text-[#A1A09A]">
             Cancel
         </a>
         <button type="submit"

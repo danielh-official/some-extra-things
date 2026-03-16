@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <div class="flex flex-col gap-4 w-full max-w-2xl">
+    <div class="flex flex-col gap-4 w-full">
         <div class="flex items-center justify-between">
             <h1 class="text-sm font-medium">Smart lists</h1>
             <a href="{{ route('smart-lists.create') }}"
