@@ -10,9 +10,7 @@
                     ({{ $parsedDate->isTomorrow() ? 'Tomorrow' : 'in ' . today()->diffInDays($parsedDate) . ' days' }})
                 </h2>
                 @foreach ($items as $item)
-                    <h3 class="text-sm font-medium">
-                        <a href="things:///show?id={{ $item->id }}">{{ $item->title }}</a>
-                    </h3>
+                    <x-item-row :item="$item" />
                 @endforeach
             </div>
         @empty
