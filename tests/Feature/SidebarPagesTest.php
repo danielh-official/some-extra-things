@@ -5,12 +5,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('redirects / to /all', function () {
-    $this->get('/')->assertRedirect('/all');
-});
-
-it('returns 200 for /all', function () {
-    $this->get('/all')->assertSuccessful();
+it('redirects / to /inbox', function () {
+    $this->get('/')->assertRedirect('/inbox');
 });
 
 it('returns 200 for /inbox', function () {

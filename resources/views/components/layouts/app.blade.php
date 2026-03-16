@@ -28,8 +28,6 @@
                     <x-sidebar-link href="{{ route('upcoming') }}" :active="request()->routeIs('upcoming')">Upcoming</x-sidebar-link>
                     <x-sidebar-link href="{{ route('anytime') }}" :active="request()->routeIs('anytime')">Anytime</x-sidebar-link>
                     <x-sidebar-link href="{{ route('someday') }}" :active="request()->routeIs('someday')">Someday</x-sidebar-link>
-                    <x-sidebar-link href="{{ route('all') }}" :active="request()->routeIs('all')">All</x-sidebar-link>
-
                     <li style="margin-top:20px;">
                         <x-sidebar-link href="{{ route('logbook') }}" :active="request()->routeIs('logbook')">Logbook</x-sidebar-link>
                     </li>

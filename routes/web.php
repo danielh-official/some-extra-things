@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\All;
 use App\Http\Controllers\Anytime;
 use App\Http\Controllers\Inbox;
 use App\Http\Controllers\Logbook;
@@ -11,8 +10,7 @@ use App\Http\Controllers\Trash;
 use App\Http\Controllers\Upcoming;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/all');
-Route::get('/all', All::class)->name('all');
+Route::redirect('/', '/inbox');
 Route::get('/inbox', Inbox::class)->name('inbox');
 Route::get('/today', Today::class)->name('today');
 Route::get('/upcoming', Upcoming::class)->name('upcoming');
