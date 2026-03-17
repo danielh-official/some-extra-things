@@ -10,7 +10,9 @@ class Tags extends Controller
 {
     public function __invoke(Request $request): View
     {
-        $sort = $request->input('sort', 'name');
+        $sort = $request->input('sort', $request->session()->get('tags_sort', 'name'));
+
+        $request->session()->put('tags_sort', $sort);
 
         $tags = Tag::withCount('items')
             ->when($sort === 'count_desc', fn ($q) => $q->orderByDesc('items_count')->orderBy('name'))
