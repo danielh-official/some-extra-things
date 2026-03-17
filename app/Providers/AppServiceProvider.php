@@ -60,6 +60,7 @@ class AppServiceProvider extends ServiceProvider
             $laterProjectsCount = Item::notTrashed()
                 ->where('type', 'Project')
                 ->where('status', 'Open')
+                ->whereNull('parent_id')
                 ->where(function ($q) {
                     $q->where('start', 'Someday')->orWhere('start_date', '>', today());
                 })

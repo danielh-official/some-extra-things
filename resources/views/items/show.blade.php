@@ -12,7 +12,13 @@
                 <span class="text-xs text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-full px-2 py-0.5">{{ $item->type }}</span>
             </div>
             @if ($item->parent)
-                <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">{{ $item->parent }}</p>
+                <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">
+                    @if ($item->parent_id)
+                        <a href="{{ route('items.show', $item->parent_id) }}">{{ $item->parent }}</a>
+                    @else
+                        {{ $item->parent }}
+                    @endif
+                </p>
             @endif
         </div>
 
@@ -63,10 +69,10 @@
                 </div>
             @endif
 
-            @if ($item->notes)
+            @if ($notesHtml)
                 <div class="flex flex-col gap-1">
                     <span class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A]">Notes</span>
-                    <p class="text-xs whitespace-pre-wrap">{{ $item->notes }}</p>
+                    <div class="prose prose-sm dark:prose-invert max-w-none text-xs">{!! $notesHtml !!}</div>
                 </div>
             @endif
 
@@ -81,6 +87,27 @@
                 </div>
             @endif
         </div>
+
+        @if ($childTodos && $childTodos->isNotEmpty())
+            <div class="flex flex-col gap-3 pt-4 border-t border-[#e5e5e5] dark:border-[#2a2a28]">
+                <span class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A]">To-Dos</span>
+                @foreach ($childTodos as $headingName => $todos)
+                    @if ($headingName !== '')
+                        @php $firstTodo = $todos->first(); @endphp
+                        <p class="text-xs font-semibold text-[#706f6c] dark:text-[#A1A09A]">
+                            @if ($firstTodo->heading_id)
+                                <a href="things:///show?id={{ $firstTodo->heading_id }}">{{ $headingName }}</a>
+                            @else
+                                {{ $headingName }}
+                            @endif
+                        </p>
+                    @endif
+                    @foreach ($todos as $todo)
+                        <x-item-row :item="$todo" :show-parent="false" />
+                    @endforeach
+                @endforeach
+            </div>
+        @endif
 
         <div class="pt-4 border-t border-[#e5e5e5] dark:border-[#2a2a28]">
             <a href="things:///show?id={{ $item->id }}"

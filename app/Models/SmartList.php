@@ -18,6 +18,7 @@ class SmartList extends Model
     protected $fillable = [
         'name',
         'criteria',
+        'kanban_view',
     ];
 
     /**

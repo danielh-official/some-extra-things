@@ -84,8 +84,8 @@ it('shows upcoming items on /upcoming', function () {
 });
 
 it('groups upcoming items by start date', function () {
-    $day1 = Item::factory()->create(['status' => 'Open', 'start_date' => today()->addDays(1)]);
-    $day2 = Item::factory()->create(['status' => 'Open', 'start_date' => today()->addDays(2)]);
+    $day1 = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start_date' => today()->addDays(1)]);
+    $day2 = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start_date' => today()->addDays(2)]);
 
     $response = get('/upcoming');
     $content = $response->getContent();
@@ -104,8 +104,8 @@ it('includes items with no start_date but a future deadline in upcoming', functi
 });
 
 it('groups deadline-only items by deadline date', function () {
-    $deadlineItem = Item::factory()->create(['status' => 'Open', 'start_date' => null, 'deadline' => today()->addDays(4)]);
-    $startDateItem = Item::factory()->create(['status' => 'Open', 'start_date' => today()->addDays(2), 'deadline' => null]);
+    $deadlineItem = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start_date' => null, 'deadline' => today()->addDays(4)]);
+    $startDateItem = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start_date' => today()->addDays(2), 'deadline' => null]);
 
     $response = get('/upcoming');
     $content = $response->getContent();
@@ -158,8 +158,8 @@ it('shows logged items on /logbook', function () {
 });
 
 it('groups logbook items by completion date descending', function () {
-    $older = Item::factory()->create(['is_logged' => true, 'completion_date' => now()->subDays(2)]);
-    $newer = Item::factory()->create(['is_logged' => true, 'completion_date' => now()->subDay()]);
+    $older = Item::factory()->create(['type' => 'To-Do', 'is_logged' => true, 'completion_date' => now()->subDays(2)]);
+    $newer = Item::factory()->create(['type' => 'To-Do', 'is_logged' => true, 'completion_date' => now()->subDay()]);
 
     $response = get('/logbook');
     $content = $response->getContent();

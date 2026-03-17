@@ -16,15 +16,25 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <a href="{{ route('smart-lists.show', [$smartList, 'invert' => $invert ? 0 : 1, 'kanban' => $kanban]) }}"
+                @if ($grouped->flatten()->count() > 0)
+                    <a href="{{ $thingsLink }}"
+                        class="inline-block px-3 py-1 bg-transparent text-xs text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm hover:bg-[#f5f5f2] dark:hover:bg-[#161615] transition-all cursor-pointer">
+                        Open in Things
+                    </a>
+                @endif
+
+                <a href="{{ route('smart-lists.show', [$smartList, 'invert' => $invert ? 0 : 1]) }}"
                     class="inline-block px-3 py-1 text-xs {{ $invert ? 'bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A] border border-black dark:border-[#eeeeec]' : 'bg-transparent text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:bg-[#f5f5f2] dark:hover:bg-[#161615]' }} rounded-sm leading-normal transition-all cursor-pointer">
                     Invert
                 </a>
 
-                <a href="{{ route('smart-lists.show', [$smartList, 'invert' => $invert ? 1 : 0, 'kanban' => $kanban === 'horizontal' ? 'vertical' : 'horizontal']) }}"
-                    class="inline-block px-3 py-1 text-xs {{ $kanban === 'horizontal' ? 'bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A] border border-black dark:border-[#eeeeec]' : 'bg-transparent text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:bg-[#f5f5f2] dark:hover:bg-[#161615]' }} rounded-sm leading-normal transition-all cursor-pointer">
-                    Horizontal
-                </a>
+                <form method="POST" action="{{ route('smart-lists.kanban', $smartList) }}">
+                    @csrf
+                    <button type="submit"
+                        class="inline-block px-3 py-1 text-xs {{ $kanban === 'horizontal' ? 'bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A] border border-black dark:border-[#eeeeec]' : 'bg-transparent text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:bg-[#f5f5f2] dark:hover:bg-[#161615]' }} rounded-sm leading-normal transition-all cursor-pointer">
+                        Horizontal
+                    </button>
+                </form>
 
                 <a href="{{ route('smart-lists.duplicate', $smartList) }}"
                     class="inline-block px-3 py-1 bg-transparent text-xs text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm hover:bg-[#f5f5f2] dark:hover:bg-[#161615] transition-all cursor-pointer">
@@ -51,10 +61,12 @@
         @if ($kanban === 'horizontal')
             <div class="flex gap-4 overflow-x-auto pb-2">
                 @forelse ($grouped as $bucket => $items)
-                    <div class="flex flex-col gap-2 w-72 shrink-0">
+                    <div class="flex flex-col gap-2 w-64 shrink-0 min-w-0">
                         <h2 class="text-sm font-medium text-[#706f6c] dark:text-[#A1A09A]">{{ $bucket }}</h2>
                         @foreach ($items as $item)
-                            <x-item-row :item="$item" />
+                            <div class="min-w-0 truncate">
+                                <x-item-row :item="$item" />
+                            </div>
                         @endforeach
                     </div>
                 @empty

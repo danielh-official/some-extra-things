@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <div class="flex flex-col gap-4 w-full max-w-2xl">
+    <div class="flex flex-col gap-4 w-full">
         <h1 class="text-sm font-medium mb-2">Later Projects</h1>
         @forelse ($grouped as $parent => $items)
             <div class="flex flex-col gap-2">

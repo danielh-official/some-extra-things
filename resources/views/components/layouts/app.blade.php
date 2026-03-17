@@ -38,20 +38,13 @@
 
             {{-- Smart Lists --}}
             <div style="margin-top:16px;">
-                <x-sidebar-link href="{{ route('smart-lists.index') }}" :active="request()->routeIs('smart-lists.index')">Smart Lists</x-sidebar-link>
+                <x-sidebar-link href="{{ route('smart-lists.index') }}" :active="request()->routeIs('smart-lists.*')">Smart Lists</x-sidebar-link>
             </div>
-            @foreach ($sidebarSmartLists as $smartList)
-                <div class="pl-3">
-                    <x-sidebar-link href="{{ route('smart-lists.show', $smartList) }}" :active="request()->routeIs('smart-lists.show') && request()->route('smart_list')?->is($smartList)">{{ $smartList->name }}</x-sidebar-link>
-                </div>
-            @endforeach
 
             {{-- Settings & Tags --}}
             <div style="margin-top:16px;">
                 <x-sidebar-link href="{{ route('settings') }}" :active="request()->routeIs('settings')">Settings</x-sidebar-link>
-            </div>
-            <div class="pl-3">
-                <x-sidebar-link href="{{ route('tags') }}" :active="request()->routeIs('tags')">Tags</x-sidebar-link>
+                <x-sidebar-link href="{{ route('tags') }}" :active="request()->routeIs('tags*')">Tags</x-sidebar-link>
             </div>
 
             {{-- Top-level active projects --}}
@@ -71,7 +64,7 @@
             {{-- Areas with their active projects --}}
             @foreach ($sidebarAreas as $area)
                 <div style="margin-top:8px;">
-                    <a href="things:///show?id={{ $area->id }}" class="px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-[#a0a09c] dark:text-[#60605c]">{{ $area->title }}</a>
+                    <x-sidebar-link href="{{ route('areas.show', $area) }}" :active="request()->routeIs('areas.show') && request()->route('area')?->is($area)" class="text-xs font-semibold uppercase tracking-wide text-[#a0a09c] dark:text-[#60605c]">{{ $area->title }}</x-sidebar-link>
                 </div>
                 @foreach ($area->sidebarProjects as $project)
                     <div class="pl-3">

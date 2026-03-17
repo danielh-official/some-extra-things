@@ -13,6 +13,7 @@ class LaterProjects extends Controller
         $grouped = Item::notTrashed()
             ->where('type', 'Project')
             ->where('status', 'Open')
+            ->whereNull('parent_id')
             ->where(function ($query) {
                 $query->where('start', 'Someday')
                     ->orWhere('start_date', '>', today());

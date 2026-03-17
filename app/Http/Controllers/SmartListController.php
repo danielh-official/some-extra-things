@@ -59,7 +59,7 @@ class SmartListController extends Controller
     public function show(SmartList $smartList): View
     {
         $invert = request()->boolean('invert');
-        $kanban = request()->input('kanban', 'vertical');
+        $kanban = $smartList->kanban_view ?? 'vertical';
 
         $items = $smartList->itemsQuery($invert)->get();
 
@@ -69,11 +69,14 @@ class SmartListController extends Controller
             ->groupBy(fn (Item $item) => $this->bucket($item))
             ->sortBy(fn ($_, $key) => array_search($key, $bucketOrder));
 
+        $thingsLink = 'things:///show?id='.$items->pluck('id')->implode(',');
+
         return view('smart-lists.show', [
             'smartList' => $smartList,
             'grouped' => $grouped,
             'invert' => $invert,
             'kanban' => $kanban,
+            'thingsLink' => $thingsLink,
         ]);
     }
 
@@ -103,6 +106,18 @@ class SmartListController extends Controller
         }
 
         return 'Anytime';
+    }
+
+    /**
+     * Toggle between vertical and horizontal kanban view.
+     */
+    public function toggleKanban(SmartList $smartList): RedirectResponse
+    {
+        $smartList->update([
+            'kanban_view' => $smartList->kanban_view === 'horizontal' ? 'vertical' : 'horizontal',
+        ]);
+
+        return redirect()->route('smart-lists.show', $smartList);
     }
 
     /**
