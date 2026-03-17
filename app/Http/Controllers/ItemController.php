@@ -18,15 +18,9 @@ class ItemController extends Controller
     {
         $validated = $request->validated();
 
-        $headingTitle = null;
-        if (! empty($validated['heading_id'])) {
-            $headingItem = Item::find($validated['heading_id']);
-            $headingTitle = $headingItem?->title;
-        }
-
         $item = Item::updateOrCreate([
             'id' => $validated['id'],
-        ], array_merge($validated, ['is_trashed' => false, 'heading' => $headingTitle]));
+        ], array_merge($validated, ['is_trashed' => false]));
 
         // Check if this was an update
         $create = $item->wasRecentlyCreated;

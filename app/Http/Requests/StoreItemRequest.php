@@ -32,7 +32,7 @@ class StoreItemRequest extends FormRequest
             'parent' => ['nullable', 'string'],
 
             'parent_id' => ['nullable', 'string'],
-            'heading_id' => ['nullable', 'string'],
+            'heading' => ['nullable', 'string'],
 
             'is_inbox' => ['sometimes', 'boolean'],
 
