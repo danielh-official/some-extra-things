@@ -14,7 +14,7 @@
             @if ($item->parent)
                 <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">
                     @if ($item->parent_id)
-                        <a href="{{ route('items.show', $item->parent_id) }}">{{ $item->parent }}</a>
+                        <a href="{{ route('projects.show', $item->parent_id) }}">{{ $item->parent }}</a>
                     @else
                         {{ $item->parent }}
                     @endif

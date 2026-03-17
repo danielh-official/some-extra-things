@@ -11,6 +11,7 @@ use App\Http\Controllers\ShowItemController;
 use App\Http\Controllers\ShowTagController;
 use App\Http\Controllers\SmartListController;
 use App\Http\Controllers\Someday;
+use App\Http\Controllers\SyncItemsController;
 use App\Http\Controllers\SyncTagsController;
 use App\Http\Controllers\Tags;
 use App\Http\Controllers\Today;
@@ -36,10 +37,12 @@ Route::get('/settings', function () {
     return view('settings');
 })->name('settings');
 
+Route::post('/sync', SyncItemsController::class)->name('sync');
 Route::delete('/settings/items', DeleteAllItems::class)->name('settings.items.destroy');
 Route::delete('/trash/items', PermanentlyDeleteTrashedItems::class)->name('trash.items.destroy');
 
-Route::get('/items/{item}', ShowItemController::class)->name('items.show');
+Route::get('/projects/{item}', ShowItemController::class)->name('projects.show');
+Route::get('/todos/{item}', ShowItemController::class)->name('todos.show');
 Route::get('/areas/{area}', [AreaController::class, 'show'])->name('areas.show');
 Route::get('/smart-lists/{smart_list}/duplicate', [SmartListController::class, 'duplicate'])->name('smart-lists.duplicate');
 Route::post('/smart-lists/{smart_list}/kanban', [SmartListController::class, 'toggleKanban'])->name('smart-lists.kanban');

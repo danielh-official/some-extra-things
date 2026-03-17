@@ -14,6 +14,7 @@ class Anytime extends Controller
     public function __invoke(Request $request)
     {
         $items = Item::notTrashed()
+            ->topLevel()
             ->where('status', 'Open')
             ->where(function (Builder $query) {
                 $query->whereNull('start')

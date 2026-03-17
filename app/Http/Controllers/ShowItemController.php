@@ -18,7 +18,7 @@ class ShowItemController extends Controller
         if ($item->type === 'Heading') {
             $parent = $item->parent_id ? Item::find($item->parent_id) : null;
             if ($parent) {
-                return redirect()->route('items.show', $parent);
+                return redirect()->route('projects.show', $parent);
             }
 
             abort(404);

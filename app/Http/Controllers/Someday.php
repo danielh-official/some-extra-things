@@ -12,7 +12,7 @@ class Someday extends Controller
      */
     public function __invoke(Request $request)
     {
-        $grouped = Item::notTrashed()->where('status', 'Open')
+        $grouped = Item::notTrashed()->topLevel()->where('status', 'Open')
             ->where('start', 'Someday')
             ->orderBy('creation_date', 'desc')
             ->get()

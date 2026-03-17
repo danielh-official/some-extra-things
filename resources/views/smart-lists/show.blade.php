@@ -16,13 +16,6 @@
             </div>
 
             <div class="flex items-center gap-2">
-                @if ($grouped->flatten()->count() > 0)
-                    <a href="{{ $thingsLink }}"
-                        class="inline-block px-3 py-1 bg-transparent text-xs text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm hover:bg-[#f5f5f2] dark:hover:bg-[#161615] transition-all cursor-pointer">
-                        Open in Things
-                    </a>
-                @endif
-
                 <a href="{{ route('smart-lists.show', [$smartList, 'invert' => $invert ? 0 : 1]) }}"
                     class="inline-block px-3 py-1 text-xs {{ $invert ? 'bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A] border border-black dark:border-[#eeeeec]' : 'bg-transparent text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:bg-[#f5f5f2] dark:hover:bg-[#161615]' }} rounded-sm leading-normal transition-all cursor-pointer">
                     Invert

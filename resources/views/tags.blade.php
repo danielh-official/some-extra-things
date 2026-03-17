@@ -1,7 +1,13 @@
 <x-layouts.app>
     <div class="flex flex-col gap-4 w-full">
         <div class="flex items-center justify-between">
-            <h1 class="text-sm font-medium">Tags</h1>
+            <div class="flex items-center gap-2">
+                <h1 class="text-sm font-medium">Tags</h1>
+                <a href="{{ route('tags', ['sort' => $sort === 'count_desc' ? 'name' : 'count_desc']) }}"
+                    class="text-xs {{ $sort === 'count_desc' ? 'text-[#1b1b18] dark:text-white font-medium' : 'text-[#706f6c] dark:text-[#A1A09A]' }} hover:underline">
+                    {{ $sort === 'count_desc' ? 'Sort: Count ↓' : 'Sort: Name' }}
+                </a>
+            </div>
             <form method="POST" action="{{ route('tags.sync') }}">
                 @csrf
                 <button type="submit"

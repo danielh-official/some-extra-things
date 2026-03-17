@@ -2,6 +2,7 @@
 @php
     $isProject = $item->type === 'Project';
     $isSomeday = $item->start === 'Someday';
+    $itemUrl = $isProject ? route('projects.show', $item) : route('todos.show', $item);
     $unloggedCount = $isProject
         ? \App\Models\Item::notTrashed()->where('parent_id', $item->id)->where('type', 'To-Do')->where('status', 'Open')->where('is_logged', false)->count()
         : 0;
@@ -20,7 +21,7 @@
     <div class="flex flex-col min-w-0">
         <div class="flex items-center gap-2 min-w-0">
             <h3 class="shrink-0 {{ $isProject ? 'text-base font-bold' : 'text-sm font-medium' }}">
-                <a href="{{ route('items.show', $item) }}">{{ $item->title }}</a>
+                <a href="{{ $itemUrl }}">{{ $item->title }}</a>
             </h3>
             @if ($isProject && $unloggedCount > 0)
                 <span class="shrink-0 text-xs text-[#706f6c] dark:text-[#A1A09A] border border-[#d0d0cc] dark:border-[#3E3E3A] px-1.5 py-0.5 rounded-sm">{{ $unloggedCount }}</span>

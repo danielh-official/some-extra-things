@@ -87,6 +87,16 @@ class Item extends Model
     }
 
     /**
+     * Scope a query to only include top-level items (projects and parentless todos).
+     * Excludes headings, areas, and todos that belong to a project.
+     */
+    public function scopeTopLevel(Builder $query): void
+    {
+        $query->whereNotIn('type', ['Heading', 'Area'])
+            ->where(fn (Builder $q) => $q->where('type', '!=', 'To-Do')->orWhereNull('parent_id'));
+    }
+
+    /**
      * The tags that belong to the item.
      */
     public function tags(): BelongsToMany
