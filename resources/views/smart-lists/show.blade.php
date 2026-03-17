@@ -61,11 +61,11 @@
         @if ($kanban === 'horizontal')
             <div class="flex gap-4 overflow-x-auto pb-2">
                 @forelse ($grouped as $bucket => $items)
-                    <div class="flex flex-col gap-2 w-64 shrink-0 min-w-0">
+                    <div class="flex flex-col gap-2 w-96 shrink-0 min-w-0 border p-4">
                         <h2 class="text-sm font-medium text-[#706f6c] dark:text-[#A1A09A]">{{ $bucket }}</h2>
                         @foreach ($items as $item)
                             <div class="min-w-0 truncate">
-                                <x-item-row :item="$item" />
+                                <x-item-row :item="$item" hide-tags />
                             </div>
                         @endforeach
                     </div>

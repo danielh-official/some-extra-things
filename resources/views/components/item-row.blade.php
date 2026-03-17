@@ -1,4 +1,4 @@
-@props(['item', 'showParent' => true])
+@props(['item', 'showParent' => true, 'hideTags' => false])
 @php
     $isProject = $item->type === 'Project';
     $isSomeday = $item->start === 'Someday';
@@ -25,7 +25,7 @@
             @if ($isProject && $unloggedCount > 0)
                 <span class="shrink-0 text-xs text-[#706f6c] dark:text-[#A1A09A] border border-[#d0d0cc] dark:border-[#3E3E3A] px-1.5 py-0.5 rounded-sm">{{ $unloggedCount }}</span>
             @endif
-            @if (!empty($item->tags))
+            @if (!empty($item->tags) && !$hideTags)
                 <div class="flex gap-1 overflow-hidden">
                     @foreach ($item->tags as $tag)
                         <span class="shrink-0 whitespace-nowrap rounded-full bg-[#f0f0ec] dark:bg-[#1e1e1c] px-2 py-0.5 text-xs text-[#706f6c] dark:text-[#A1A09A]">{{ $tag }}</span>
