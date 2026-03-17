@@ -7,7 +7,7 @@ use App\Models\Tag;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
-class ShowTagController extends Controller
+class ShowTag extends Controller
 {
     public function __invoke(Request $request, string $tag): View
     {

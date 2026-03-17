@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use League\CommonMark\CommonMarkConverter;
 
-class ShowItemController extends Controller
+class ShowItem extends Controller
 {
     /**
      * Handle the incoming request.
