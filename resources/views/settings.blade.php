@@ -23,6 +23,10 @@
         </div>
 
         <div class="mt-6 pt-6 border-t border-[#e3e3e0] dark:border-[#3E3E3A] flex items-center justify-between">
+            <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">Version {{ config('nativephp.version') }}</p>
+        </div>
+
+        <div class="mt-6 pt-6 border-t border-[#e3e3e0] dark:border-[#3E3E3A] flex items-center justify-between">
             <div>
                 <p class="text-[#706f6c] dark:text-[#A1A09A]">Move all items to Trash.</p>
             </div>
