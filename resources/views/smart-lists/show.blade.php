@@ -70,6 +70,16 @@
                                     </div>
                                 @endforeach
                             @endif
+                        @elseif ($bucket === 'Upcoming')
+                            @foreach ($items->groupBy(fn ($item) => $item->start_date->format('Y-m-d')) as $date => $dateItems)
+                                @php $days = (int) today()->diffInDays(\Carbon\Carbon::parse($date)); @endphp
+                                <p class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A] mt-2 first:mt-0">{{ \Carbon\Carbon::parse($date)->format('M j') }} <span class="font-normal">({{ $days === 1 ? 'Tomorrow' : $days.' days' }})</span></p>
+                                @foreach ($dateItems as $item)
+                                    <div class="min-w-0 truncate">
+                                        <x-item-row :item="$item" hide-tags />
+                                    </div>
+                                @endforeach
+                            @endforeach
                         @else
                             @foreach ($items as $item)
                                 <div class="min-w-0 truncate">
@@ -96,6 +106,14 @@
                                 <x-item-row :item="$item" />
                             @endforeach
                         @endif
+                    @elseif ($bucket === 'Upcoming')
+                        @foreach ($items->groupBy(fn ($item) => $item->start_date->format('Y-m-d')) as $date => $dateItems)
+                            @php $days = (int) today()->diffInDays(\Carbon\Carbon::parse($date)); @endphp
+                                <p class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A] mt-2 first:mt-0">{{ \Carbon\Carbon::parse($date)->format('M j') }} <span class="font-normal">({{ $days === 1 ? 'Tomorrow' : $days.' days' }})</span></p>
+                            @foreach ($dateItems as $item)
+                                <x-item-row :item="$item" />
+                            @endforeach
+                        @endforeach
                     @else
                         @foreach ($items as $item)
                             <x-item-row :item="$item" />

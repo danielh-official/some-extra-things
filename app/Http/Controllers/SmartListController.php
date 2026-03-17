@@ -66,6 +66,7 @@ class SmartListController extends Controller
         $bucketOrder = ['Inbox', 'Today', 'Anytime', 'Upcoming', 'Someday', 'Logbook'];
 
         $grouped = $items
+            ->sortBy(fn (Item $item) => $item->start_date?->timestamp ?? PHP_INT_MAX)
             ->groupBy(fn (Item $item) => $this->bucket($item))
             ->sortBy(fn ($_, $key) => array_search($key, $bucketOrder));
 
