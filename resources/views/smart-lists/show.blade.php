@@ -56,11 +56,27 @@
                 @forelse ($grouped as $bucket => $items)
                     <div class="flex flex-col gap-2 w-96 shrink-0 min-w-0 border p-4">
                         <h2 class="text-sm font-medium text-[#706f6c] dark:text-[#A1A09A]">{{ $bucket }}</h2>
-                        @foreach ($items as $item)
-                            <div class="min-w-0 truncate">
-                                <x-item-row :item="$item" hide-tags />
-                            </div>
-                        @endforeach
+                        @if ($bucket === 'Today')
+                            @foreach ($items->where('evening', false) as $item)
+                                <div class="min-w-0 truncate">
+                                    <x-item-row :item="$item" hide-tags />
+                                </div>
+                            @endforeach
+                            @if ($items->where('evening', true)->isNotEmpty())
+                                <p class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A] mt-2">Evening</p>
+                                @foreach ($items->where('evening', true) as $item)
+                                    <div class="min-w-0 truncate">
+                                        <x-item-row :item="$item" hide-tags />
+                                    </div>
+                                @endforeach
+                            @endif
+                        @else
+                            @foreach ($items as $item)
+                                <div class="min-w-0 truncate">
+                                    <x-item-row :item="$item" hide-tags />
+                                </div>
+                            @endforeach
+                        @endif
                     </div>
                 @empty
                     <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">No matching items.</p>
@@ -70,9 +86,21 @@
             @forelse ($grouped as $bucket => $items)
                 <div class="flex flex-col gap-2">
                     <h2 class="text-sm font-medium text-[#706f6c] dark:text-[#A1A09A]">{{ $bucket }}</h2>
-                    @foreach ($items as $item)
-                        <x-item-row :item="$item" />
-                    @endforeach
+                    @if ($bucket === 'Today')
+                        @foreach ($items->where('evening', false) as $item)
+                            <x-item-row :item="$item" />
+                        @endforeach
+                        @if ($items->where('evening', true)->isNotEmpty())
+                            <p class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A] mt-2">Evening</p>
+                            @foreach ($items->where('evening', true) as $item)
+                                <x-item-row :item="$item" />
+                            @endforeach
+                        @endif
+                    @else
+                        @foreach ($items as $item)
+                            <x-item-row :item="$item" />
+                        @endforeach
+                    @endif
                 </div>
             @empty
                 <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">
