@@ -76,8 +76,8 @@
 
         {{-- Settings & Tags --}}
         <div style="margin-top:16px;">
-            <x-sidebar-link href="{{ route('settings') }}" :active="request()->routeIs('settings')">Settings</x-sidebar-link>
             <x-sidebar-link href="{{ route('tags') }}" :active="request()->routeIs('tags*')">Tags</x-sidebar-link>
+            <x-sidebar-link href="{{ route('settings') }}" :active="request()->routeIs('settings')">Settings</x-sidebar-link>
         </div>
     </aside>
     <div class="flex flex-col flex-1 overflow-hidden">
