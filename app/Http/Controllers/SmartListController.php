@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSmartListRequest;
 use App\Http\Requests\UpdateSmartListRequest;
+use App\Models\Item;
 use App\Models\SmartList;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -57,11 +58,61 @@ class SmartListController extends Controller
      */
     public function show(SmartList $smartList): View
     {
-        $items = $smartList->itemsQuery()->paginate(25);
+        $invert = request()->boolean('invert');
+
+        $items = $smartList->itemsQuery($invert)->get();
+
+        $bucketOrder = ['Inbox', 'Today', 'Upcoming', 'Anytime', 'Someday', 'Logbook'];
+
+        $grouped = $items
+            ->groupBy(fn (Item $item) => $this->bucket($item))
+            ->sortBy(fn ($_, $key) => array_search($key, $bucketOrder));
 
         return view('smart-lists.show', [
             'smartList' => $smartList,
-            'items' => $items,
+            'grouped' => $grouped,
+            'invert' => $invert,
+        ]);
+    }
+
+    /**
+     * Classify an item into a display bucket.
+     */
+    protected function bucket(Item $item): string
+    {
+        if ($item->is_inbox) {
+            return 'Inbox';
+        }
+
+        if ($item->is_logged) {
+            return 'Logbook';
+        }
+
+        if ($item->start_date && $item->start_date->lte(today())) {
+            return 'Today';
+        }
+
+        if ($item->start_date && $item->start_date->gt(today())) {
+            return 'Upcoming';
+        }
+
+        if ($item->start === 'Someday') {
+            return 'Someday';
+        }
+
+        return 'Anytime';
+    }
+
+    /**
+     * Show the create form pre-filled with data from another smart list.
+     */
+    public function duplicate(SmartList $smartList): View
+    {
+        $copy = $smartList->replicate();
+
+        return view('smart-lists.create', [
+            'smartList' => $copy,
+            'heading' => 'Duplicate smart list',
         ]);
     }
 

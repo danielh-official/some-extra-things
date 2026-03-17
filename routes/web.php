@@ -5,6 +5,7 @@ use App\Http\Controllers\DeleteAllItems;
 use App\Http\Controllers\Inbox;
 use App\Http\Controllers\Logbook;
 use App\Http\Controllers\PermanentlyDeleteTrashedItems;
+use App\Http\Controllers\ShowItemController;
 use App\Http\Controllers\SmartListController;
 use App\Http\Controllers\Someday;
 use App\Http\Controllers\Today;
@@ -28,4 +29,6 @@ Route::get('/settings', function () {
 Route::delete('/settings/items', DeleteAllItems::class)->name('settings.items.destroy');
 Route::delete('/trash/items', PermanentlyDeleteTrashedItems::class)->name('trash.items.destroy');
 
+Route::get('/items/{item}', ShowItemController::class)->name('items.show');
+Route::get('/smart-lists/{smart_list}/duplicate', [SmartListController::class, 'duplicate'])->name('smart-lists.duplicate');
 Route::resource('smart-lists', SmartListController::class);

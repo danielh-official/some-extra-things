@@ -13,6 +13,7 @@
 
     <!-- Styles / Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
 </head>
 
 <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-white flex h-screen">
@@ -52,6 +53,7 @@
     <main class="overflow-y-auto p-4 w-full"">
         {{ $slot }}
     </main>
+    @livewireScripts
 </body>
 
 </html>

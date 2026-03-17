@@ -16,13 +16,15 @@ class Anytime extends Controller
         $items = Item::notTrashed()
             ->where('status', 'Open')
             ->where(function (Builder $query) {
-                $query->where('start', 'Anytime')
+                $query->whereNull('start')
                     ->orWhere('start_date', '<=', today());
             })
             ->where('is_inbox', false)
             ->orderBy('creation_date', 'desc')
             ->get();
 
-        return view('anytime', compact('items'));
+        $grouped = $items->groupBy(fn (Item $item) => $item->parent ?? '');
+
+        return view('anytime', compact('grouped'));
     }
 }

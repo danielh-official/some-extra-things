@@ -129,9 +129,9 @@ it('groups item with both start_date and deadline by start_date', function () {
 });
 
 it('shows anytime items on /anytime', function () {
-    $anytimeItem = Item::factory()->create(['status' => 'Open', 'start' => 'anytime', 'is_inbox' => false]);
-    $somedayItem = Item::factory()->create(['status' => 'Open', 'start' => 'someday', 'is_inbox' => false]);
-    $inboxItem = Item::factory()->create(['status' => 'Open', 'start' => 'anytime', 'is_inbox' => true]);
+    $anytimeItem = Item::factory()->create(['status' => 'Open', 'start' => null, 'is_inbox' => false]);
+    $somedayItem = Item::factory()->create(['status' => 'Open', 'start' => 'Someday', 'is_inbox' => false]);
+    $inboxItem = Item::factory()->create(['status' => 'Open', 'start' => null, 'is_inbox' => true]);
 
     get('/anytime')
         ->assertSee($anytimeItem->title)
@@ -140,8 +140,8 @@ it('shows anytime items on /anytime', function () {
 });
 
 it('shows someday items on /someday', function () {
-    $somedayItem = Item::factory()->create(['status' => 'Open', 'start' => 'someday']);
-    $anytimeItem = Item::factory()->create(['status' => 'Open', 'start' => 'anytime']);
+    $somedayItem = Item::factory()->create(['status' => 'Open', 'start' => 'Someday']);
+    $anytimeItem = Item::factory()->create(['status' => 'Open', 'start' => null]);
 
     get('/someday')
         ->assertSee($somedayItem->title)

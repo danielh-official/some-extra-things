@@ -32,13 +32,22 @@ class SmartList extends Model
 
     /**
      * Build a base query for items matching this smart list's criteria.
+     * When $invert is true, returns items that do NOT match the criteria.
      */
-    public function itemsQuery(): Builder
+    public function itemsQuery(bool $invert = false): Builder
     {
+        $criteria = $this->criteria;
+
+        if ($invert && is_array($criteria) && $criteria !== []) {
+            $matchingIds = (clone $this->itemsQuery())->pluck('id');
+
+            return Item::notTrashed()
+                ->where('status', 'Open')
+                ->whereNotIn('id', $matchingIds);
+        }
+
         $query = Item::notTrashed()
             ->where('status', 'Open');
-
-        $criteria = $this->criteria;
 
         if (is_array($criteria) && $criteria !== []) {
             $this->applyCriteria($query, $criteria);

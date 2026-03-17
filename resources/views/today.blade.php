@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <div class="flex flex-col gap-2 w-full max-w-2xl">
+    <div class="flex flex-col gap-2 w-full">
         <h1 class="text-sm font-medium mb-2">Today</h1>
         @forelse ($todayItems as $item)
             <x-item-row :item="$item" />

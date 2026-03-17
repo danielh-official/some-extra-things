@@ -12,11 +12,12 @@ class Someday extends Controller
      */
     public function __invoke(Request $request)
     {
-        $items = Item::notTrashed()->where('status', 'Open')
+        $grouped = Item::notTrashed()->where('status', 'Open')
             ->where('start', 'Someday')
             ->orderBy('creation_date', 'desc')
-            ->get();
+            ->get()
+            ->groupBy(fn (Item $item) => $item->parent ?? '');
 
-        return view('someday', compact('items'));
+        return view('someday', compact('grouped'));
     }
 }

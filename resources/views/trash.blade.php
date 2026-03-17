@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <div class="flex flex-col gap-2 w-full max-w-2xl">
+    <div class="flex flex-col gap-2 w-full">
         <div class="flex items-center justify-between mb-2">
             <h1 class="text-sm font-medium">Trash</h1>
             @if ($items->isNotEmpty())
