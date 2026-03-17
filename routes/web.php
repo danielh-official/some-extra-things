@@ -11,7 +11,6 @@ use App\Http\Controllers\ShowItem;
 use App\Http\Controllers\ShowTag;
 use App\Http\Controllers\SmartListController;
 use App\Http\Controllers\Someday;
-use App\Http\Controllers\SyncItems;
 use App\Http\Controllers\SyncTags;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\Tags;
@@ -40,7 +39,6 @@ Route::get('/settings', function () {
     return view('settings');
 })->name('settings');
 
-Route::post('/sync', SyncItems::class)->name('sync');
 Route::delete('/settings/items', DeleteAllItems::class)->name('settings.items.destroy');
 Route::delete('/trash/items', PermanentlyDeleteTrashedItems::class)->name('trash.items.destroy');
 

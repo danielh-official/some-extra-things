@@ -75,20 +75,6 @@
         </div>
     </aside>
     <div class="flex flex-col flex-1 overflow-hidden">
-        <div class="flex items-center justify-end px-4 py-2 border-b border-[#e5e5e5] dark:border-[#2a2a28] shrink-0">
-            @if (session('sync_status'))
-                <span class="text-xs text-green-600 dark:text-green-400 mr-3">{{ session('sync_status') }}</span>
-            @endif
-            @if (session('sync_error'))
-                <span class="text-xs text-red-600 dark:text-red-400 mr-3">{{ session('sync_error') }}</span>
-            @endif
-            <form method="POST" action="{{ route('sync') }}" onsubmit="return confirm('Sync all items from Things 3? This may take a moment.')">
-                @csrf
-                <button type="submit" class="text-xs text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-white transition-colors">
-                    Sync
-                </button>
-            </form>
-        </div>
         <main class="overflow-y-auto p-4 w-full flex-1">
             {{ $slot }}
         </main>
