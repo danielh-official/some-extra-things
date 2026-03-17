@@ -63,7 +63,7 @@ class SmartListController extends Controller
 
         $items = $smartList->itemsQuery($invert)->get();
 
-        $bucketOrder = ['Inbox', 'Today', 'Upcoming', 'Anytime', 'Someday', 'Logbook'];
+        $bucketOrder = ['Inbox', 'Today', 'Anytime', 'Upcoming', 'Someday', 'Logbook'];
 
         $grouped = $items
             ->groupBy(fn (Item $item) => $this->bucket($item))
