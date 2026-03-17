@@ -40,14 +40,42 @@
             @if ($item->start_date)
                 <div class="flex gap-2">
                     <span class="text-xs font-medium w-28 shrink-0 text-[#706f6c] dark:text-[#A1A09A]">Start Date</span>
-                    <span class="text-xs">{{ $item->start_date->format('F j, Y') }}</span>
+                    <span class="text-xs">
+                        {{ $item->start_date->format('F j, Y') }}
+                        @php
+                            $days = (int) today()->diffInDays($item->start_date, false);
+                        @endphp
+                        @if ($days === 0)
+                            <span class="text-[#706f6c] dark:text-[#A1A09A]">(Today)</span>
+                        @elseif ($days === 1)
+                            <span class="text-[#706f6c] dark:text-[#A1A09A]">(Tomorrow)</span>
+                        @elseif ($days > 1)
+                            <span class="text-[#706f6c] dark:text-[#A1A09A]">(in {{ $days }} days)</span>
+                        @else
+                            <span class="text-[#706f6c] dark:text-[#A1A09A]">({{ abs($days) }} {{ abs($days) === 1 ? 'day' : 'days' }} ago)</span>
+                        @endif
+                    </span>
                 </div>
             @endif
 
             @if ($item->deadline)
                 <div class="flex gap-2">
                     <span class="text-xs font-medium w-28 shrink-0 text-[#706f6c] dark:text-[#A1A09A]">Deadline</span>
-                    <span class="text-xs">{{ $item->deadline->format('F j, Y') }}</span>
+                    <span class="text-xs">
+                        {{ $item->deadline->format('F j, Y') }}
+                        @php
+                            $days = (int) today()->diffInDays($item->deadline, false);
+                        @endphp
+                        @if ($days === 0)
+                            <span class="text-[#706f6c] dark:text-[#A1A09A]">(Today)</span>
+                        @elseif ($days === 1)
+                            <span class="text-[#706f6c] dark:text-[#A1A09A]">(Tomorrow)</span>
+                        @elseif ($days > 1)
+                            <span class="text-[#706f6c] dark:text-[#A1A09A]">(in {{ $days }} days)</span>
+                        @else
+                            <span class="text-[#706f6c] dark:text-[#A1A09A]">({{ abs($days) }} {{ abs($days) === 1 ? 'day' : 'days' }} ago)</span>
+                        @endif
+                    </span>
                 </div>
             @endif
 
