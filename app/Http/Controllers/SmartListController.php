@@ -61,7 +61,7 @@ class SmartListController extends Controller
         $invert = request()->boolean('invert');
         $kanban = $smartList->kanban_view ?? 'vertical';
 
-        $items = $smartList->itemsQuery($invert)->get();
+        $items = $smartList->itemsQuery($invert)->whereIn('type', ['To-Do', 'Project'])->get();
 
         $bucketOrder = ['Inbox', 'Today', 'Anytime', 'Upcoming', 'Someday', 'Logbook'];
 
