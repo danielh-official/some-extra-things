@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Tag;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
-class SyncTagsController extends Controller
+class SyncTags extends Controller
 {
-    public function __invoke(Request $request): RedirectResponse
+    public function __invoke(): RedirectResponse
     {
         $script = <<<'APPLESCRIPT'
         tell application "Things3"

@@ -12,7 +12,7 @@ use App\Http\Controllers\ShowTag;
 use App\Http\Controllers\SmartListController;
 use App\Http\Controllers\Someday;
 use App\Http\Controllers\SyncItems;
-use App\Http\Controllers\SyncTagsController;
+use App\Http\Controllers\SyncTags;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\Tags;
 use App\Http\Controllers\Today;
@@ -30,7 +30,7 @@ Route::get('/logbook', Logbook::class)->name('logbook');
 Route::get('/trash', Trash::class)->name('trash');
 
 Route::get('/tags', Tags::class)->name('tags');
-Route::post('/tags/sync', SyncTagsController::class)->name('tags.sync');
+Route::post('/tags/sync', SyncTags::class)->name('tags.sync');
 Route::get('/tags/{tag}/edit', [TagController::class, 'edit'])->name('tags.edit');
 Route::patch('/tags/{tag}', [TagController::class, 'update'])->name('tags.update');
 Route::get('/tags/{tag}', ShowTag::class)->name('tags.show');
