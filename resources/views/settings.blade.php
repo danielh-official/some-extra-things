@@ -22,8 +22,9 @@
             </div>
         </div>
 
-        <div class="mt-6 pt-6 border-t border-[#e3e3e0] dark:border-[#3E3E3A] flex items-center justify-between">
+        <div class="mt-6 pt-6 border-t border-[#e3e3e0] dark:border-[#3E3E3A] flex flex-col gap-1">
             <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">Version {{ config('nativephp.version') }}</p>
+            <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">Database: {{ database_path('nativephp.sqlite') }}</p>
         </div>
 
         <div class="mt-6 pt-6 border-t border-[#e3e3e0] dark:border-[#3E3E3A] flex items-center justify-between">
