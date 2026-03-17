@@ -37,41 +37,47 @@
             @endif
 
             {{-- Smart Lists --}}
-            <div style="margin-top:16px;">
+            <div style="margin-top:16px;margin-bottom:16px;">
                 <x-sidebar-link href="{{ route('smart-lists.index') }}" :active="request()->routeIs('smart-lists.*')">Smart Lists</x-sidebar-link>
-            </div>
-
-            {{-- Settings & Tags --}}
-            <div style="margin-top:16px;">
-                <x-sidebar-link href="{{ route('settings') }}" :active="request()->routeIs('settings')">Settings</x-sidebar-link>
-                <x-sidebar-link href="{{ route('tags') }}" :active="request()->routeIs('tags*')">Tags</x-sidebar-link>
             </div>
 
             {{-- Top-level active projects --}}
             @foreach ($sidebarTopLevelProjects as $project)
                 <div style="margin-top:4px;">
-                    <x-sidebar-link href="{{ route('projects.show', $project) }}" :active="request()->routeIs('projects.show') && request()->route('item')?->is($project)">{{ $project->title }}</x-sidebar-link>
+                    <x-sidebar-link href="{{ route('projects.show', $project) }}"
+                        :active="request()->routeIs('projects.show') && request()->route('item')?->is($project)">{{ $project->title }}</x-sidebar-link>
                 </div>
             @endforeach
 
             {{-- Later Projects --}}
             @if ($sidebarLaterProjectsCount > 0)
                 <div style="margin-top:4px;">
-                    <x-sidebar-link href="{{ route('later-projects') }}" :active="request()->routeIs('later-projects')">Later Projects</x-sidebar-link>
+                    <x-sidebar-link href="{{ route('later-projects') }}" :active="request()->routeIs('later-projects')">Later
+                        Projects</x-sidebar-link>
                 </div>
             @endif
 
             {{-- Areas with their active projects --}}
             @foreach ($sidebarAreas as $area)
                 <div style="margin-top:8px;">
-                    <x-sidebar-link href="{{ route('areas.show', $area) }}" :active="request()->routeIs('areas.show') && request()->route('area')?->is($area)" class="text-xs font-semibold uppercase tracking-wide text-[#a0a09c] dark:text-[#60605c]">{{ $area->title }}</x-sidebar-link>
+                    <x-sidebar-link href="{{ route('areas.show', $area) }}" :active="request()->routeIs('areas.show') && request()->route('area')?->is($area)"
+                        class="text-xs font-semibold uppercase tracking-wide text-[#a0a09c] dark:text-[#60605c]">{{ $area->title }}</x-sidebar-link>
                 </div>
                 @foreach ($area->sidebarProjects as $project)
                     <div class="pl-3">
-                        <x-sidebar-link href="{{ route('projects.show', $project) }}" :active="request()->routeIs('projects.show') && request()->route('item')?->is($project)">{{ $project->title }}</x-sidebar-link>
+                        <x-sidebar-link href="{{ route('projects.show', $project) }}"
+                            :active="request()->routeIs('projects.show') && request()->route('item')?->is($project)">{{ $project->title }}</x-sidebar-link>
                     </div>
                 @endforeach
             @endforeach
+        </div>
+
+        <hr class="border-gray-300 dark:border-gray-600" />
+
+        {{-- Settings & Tags --}}
+        <div style="margin-top:16px;">
+            <x-sidebar-link href="{{ route('settings') }}" :active="request()->routeIs('settings')">Settings</x-sidebar-link>
+            <x-sidebar-link href="{{ route('tags') }}" :active="request()->routeIs('tags*')">Tags</x-sidebar-link>
         </div>
     </aside>
     <div class="flex flex-col flex-1 overflow-hidden">
