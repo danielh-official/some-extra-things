@@ -8,26 +8,45 @@
             </a>
         </div>
 
-        @if ($projects->isNotEmpty())
-            <div class="flex flex-col gap-2">
-                <h2 class="text-xs font-semibold uppercase tracking-wide text-[#a0a09c] dark:text-[#60605c]">Projects</h2>
-                @foreach ($projects as $project)
-                    <x-item-row :item="$project" :show-parent="false" />
-                @endforeach
-            </div>
-        @endif
-
-        @if ($todos->isNotEmpty())
-            <div class="flex flex-col gap-2">
-                <h2 class="text-xs font-semibold uppercase tracking-wide text-[#a0a09c] dark:text-[#60605c]">To-Dos</h2>
-                @foreach ($todos as $todo)
-                    <x-item-row :item="$todo" :show-parent="false" />
-                @endforeach
-            </div>
-        @endif
-
-        @if ($projects->isEmpty() && $todos->isEmpty())
+        @if ($items->isEmpty() && $upcomingItems->isEmpty() && $somedayItems->isEmpty())
             <p class="text-[#706f6c] dark:text-[#A1A09A]">No items in this area.</p>
+        @else
+            @foreach ($items->groupBy('type') as $type => $typeItems)
+                <div class="flex flex-col gap-2">
+                    <h2 class="text-xs font-semibold uppercase tracking-wide text-[#a0a09c] dark:text-[#60605c]">{{ Str::plural($type) }}</h2>
+                    @foreach ($typeItems as $item)
+                        <x-item-row :item="$item" :show-parent="false" />
+                    @endforeach
+                </div>
+            @endforeach
+
+            @if ($upcomingItems->isNotEmpty())
+                <div class="border-t border-[#e5e5e5] dark:border-[#2a2a28] pt-4 flex flex-col gap-4">
+                    <h2 class="text-xs font-semibold uppercase tracking-wide text-[#a0a09c] dark:text-[#60605c]">Upcoming</h2>
+                    @foreach ($upcomingItems->groupBy('type') as $type => $typeItems)
+                        <div class="flex flex-col gap-2">
+                            <h3 class="text-xs font-medium text-[#a0a09c] dark:text-[#60605c]">{{ Str::plural($type) }}</h3>
+                            @foreach ($typeItems as $item)
+                                <x-item-row :item="$item" :show-parent="false" />
+                            @endforeach
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
+            @if ($somedayItems->isNotEmpty())
+                <div class="border-t border-[#e5e5e5] dark:border-[#2a2a28] pt-4 flex flex-col gap-4">
+                    <h2 class="text-xs font-semibold uppercase tracking-wide text-[#a0a09c] dark:text-[#60605c]">Someday</h2>
+                    @foreach ($somedayItems->groupBy('type') as $type => $typeItems)
+                        <div class="flex flex-col gap-2">
+                            <h3 class="text-xs font-medium text-[#a0a09c] dark:text-[#60605c]">{{ Str::plural($type) }}</h3>
+                            @foreach ($typeItems as $item)
+                                <x-item-row :item="$item" :show-parent="false" />
+                            @endforeach
+                        </div>
+                    @endforeach
+                </div>
+            @endif
         @endif
     </div>
 </x-layouts.app>

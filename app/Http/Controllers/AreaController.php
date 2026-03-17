@@ -12,20 +12,22 @@ class AreaController extends Controller
     {
         abort_if($area->type !== 'Area', 404);
 
-        $projects = Item::notTrashed()
+        $all = Item::notTrashed()
+            ->whereIn('type', ['Project', 'To-Do'])
             ->where('parent_id', $area->id)
-            ->where('type', 'Project')
             ->where('status', 'Open')
             ->orderBy('creation_date')
             ->get();
 
-        $todos = Item::notTrashed()
-            ->where('parent_id', $area->id)
-            ->where('type', 'To-Do')
-            ->where('status', 'Open')
-            ->orderBy('creation_date')
-            ->get();
+        $isUpcoming = fn (Item $item): bool =>
+            $item->start !== 'Someday' && $item->start_date && $item->start_date->gt(today());
 
-        return view('areas.show', compact('area', 'projects', 'todos'));
+        $isSomeday = fn (Item $item): bool => $item->start === 'Someday';
+
+        $items = $all->reject(fn (Item $item) => $isUpcoming($item) || $isSomeday($item));
+        $upcomingItems = $all->filter($isUpcoming);
+        $somedayItems = $all->filter($isSomeday);
+
+        return view('areas.show', compact('area', 'items', 'upcomingItems', 'somedayItems'));
     }
 }
