@@ -17,12 +17,6 @@
                             <code
                                 class="px-1.5 py-0.5 rounded-sm bg-[#fff2f2] dark:bg-[#1D0002] border border-[#e3e3e0] dark:border-[#3E3E3A]">POST {{ url('/') }}/api/items</code>
                         </div>
-                        <div>
-                            <p class="text-[#706f6c] dark:text-[#A1A09A] ml-1">update</p>
-                            <code
-                                class="px-1.5 py-0.5 rounded-sm bg-[#fff2f2] dark:bg-[#1D0002] border border-[#e3e3e0] dark:border-[#3E3E3A]">PUT {{ url('/') }}/api/items/{id}</code>
-                            </p>
-                        </div>
                     </div>
                 </div>
             </div>
