@@ -12,8 +12,17 @@ class Someday extends Controller
      */
     public function __invoke(Request $request)
     {
-        $grouped = Item::notTrashed()->topLevel()->where('status', 'Open')
+        $projectIds = Item::where('type', 'Project')->pluck('id');
+
+        $grouped = Item::notTrashed()
+            ->whereNotIn('type', ['Area', 'Heading'])
+            ->where('status', 'Open')
             ->where('start', 'Someday')
+            ->where(function ($q) use ($projectIds) {
+                $q->where('type', '!=', 'To-Do')
+                    ->orWhereNull('parent_id')
+                    ->orWhereNotIn('parent_id', $projectIds);
+            })
             ->orderBy('creation_date', 'desc')
             ->get()
             ->groupBy(fn (Item $item) => $item->parent ?? '');
