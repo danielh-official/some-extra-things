@@ -40,8 +40,8 @@ it('returns 200 for /trash', function () {
 });
 
 it('shows inbox items on /inbox', function () {
-    $inboxItem = Item::factory()->create(['is_inbox' => true, 'status' => 'Open']);
-    $nonInboxItem = Item::factory()->create(['is_inbox' => false, 'status' => 'Open']);
+    $inboxItem = Item::factory()->create(['type' => 'To-Do', 'is_inbox' => true, 'status' => 'Open']);
+    $nonInboxItem = Item::factory()->create(['type' => 'To-Do', 'is_inbox' => false, 'status' => 'Open']);
 
     get('/inbox')
         ->assertSee($inboxItem->title)
@@ -49,9 +49,9 @@ it('shows inbox items on /inbox', function () {
 });
 
 it('shows today items on /today', function () {
-    $todayItem = Item::factory()->create(['status' => 'Open', 'start_date' => today()]);
-    $futureItem = Item::factory()->create(['status' => 'Open', 'start_date' => today()->addDay()]);
-    $noDateItem = Item::factory()->create(['status' => 'Open', 'start_date' => null]);
+    $todayItem = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start_date' => today()]);
+    $futureItem = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start_date' => today()->addDay()]);
+    $noDateItem = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start_date' => null]);
 
     get('/today')
         ->assertSee($todayItem->title)
@@ -60,8 +60,8 @@ it('shows today items on /today', function () {
 });
 
 it('separates evening items under This Evening header on /today', function () {
-    $regularItem = Item::factory()->create(['status' => 'Open', 'start_date' => today(), 'evening' => false]);
-    $eveningItem = Item::factory()->create(['status' => 'Open', 'start_date' => today(), 'evening' => true]);
+    $regularItem = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start_date' => today(), 'evening' => false]);
+    $eveningItem = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start_date' => today(), 'evening' => true]);
 
     $response = get('/today');
 
@@ -75,8 +75,8 @@ it('separates evening items under This Evening header on /today', function () {
 });
 
 it('shows upcoming items on /upcoming', function () {
-    $futureItem = Item::factory()->create(['status' => 'Open', 'start_date' => today()->addDay()]);
-    $todayItem = Item::factory()->create(['status' => 'Open', 'start_date' => today()]);
+    $futureItem = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start_date' => today()->addDay()]);
+    $todayItem = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start_date' => today()]);
 
     get('/upcoming')
         ->assertSee($futureItem->title)
@@ -95,8 +95,8 @@ it('groups upcoming items by start date', function () {
 });
 
 it('includes items with no start_date but a future deadline in upcoming', function () {
-    $deadlineOnly = Item::factory()->create(['status' => 'Open', 'start_date' => null, 'deadline' => today()->addDays(3)]);
-    $noDate = Item::factory()->create(['status' => 'Open', 'start_date' => null, 'deadline' => null]);
+    $deadlineOnly = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start_date' => null, 'deadline' => today()->addDays(3)]);
+    $noDate = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start_date' => null, 'deadline' => null]);
 
     get('/upcoming')
         ->assertSee($deadlineOnly->title)
@@ -129,9 +129,9 @@ it('groups item with both start_date and deadline by start_date', function () {
 });
 
 it('shows anytime items on /anytime', function () {
-    $anytimeItem = Item::factory()->create(['status' => 'Open', 'start' => null, 'is_inbox' => false]);
-    $somedayItem = Item::factory()->create(['status' => 'Open', 'start' => 'Someday', 'is_inbox' => false]);
-    $inboxItem = Item::factory()->create(['status' => 'Open', 'start' => null, 'is_inbox' => true]);
+    $anytimeItem = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start' => null, 'is_inbox' => false]);
+    $somedayItem = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start' => 'Someday', 'is_inbox' => false]);
+    $inboxItem = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start' => null, 'is_inbox' => true]);
 
     get('/anytime')
         ->assertSee($anytimeItem->title)
@@ -140,8 +140,8 @@ it('shows anytime items on /anytime', function () {
 });
 
 it('shows someday items on /someday', function () {
-    $somedayItem = Item::factory()->create(['status' => 'Open', 'start' => 'Someday']);
-    $anytimeItem = Item::factory()->create(['status' => 'Open', 'start' => null]);
+    $somedayItem = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start' => 'Someday']);
+    $anytimeItem = Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'start' => null]);
 
     get('/someday')
         ->assertSee($somedayItem->title)
@@ -149,8 +149,8 @@ it('shows someday items on /someday', function () {
 });
 
 it('shows logged items on /logbook', function () {
-    $loggedItem = Item::factory()->create(['is_logged' => true, 'completion_date' => now()]);
-    $notLoggedItem = Item::factory()->create(['is_logged' => false]);
+    $loggedItem = Item::factory()->create(['type' => 'To-Do', 'is_logged' => true, 'completion_date' => now()]);
+    $notLoggedItem = Item::factory()->create(['type' => 'To-Do', 'is_logged' => false]);
 
     get('/logbook')
         ->assertSee($loggedItem->title)
@@ -181,8 +181,8 @@ it('shows x-mark icon for cancelled items in logbook', function () {
 });
 
 it('shows trashed items on /trash', function () {
-    $trashedItem = Item::factory()->create(['is_trashed' => true]);
-    $openItem = Item::factory()->create(['is_trashed' => false]);
+    $trashedItem = Item::factory()->create(['type' => 'To-Do', 'is_trashed' => true]);
+    $openItem = Item::factory()->create(['type' => 'To-Do', 'is_trashed' => false]);
 
     get('/trash')
         ->assertSee($trashedItem->title)

@@ -37,6 +37,7 @@ class Item extends Model
         'parent',
         'parent_id',
         'heading_id',
+        'heading',
         'is_inbox',
         'start',
         'start_date',

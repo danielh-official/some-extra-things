@@ -16,9 +16,14 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <a href="{{ route('smart-lists.show', [$smartList, 'invert' => $invert ? 0 : 1]) }}"
+                <a href="{{ route('smart-lists.show', [$smartList, 'invert' => $invert ? 0 : 1, 'kanban' => $kanban]) }}"
                     class="inline-block px-3 py-1 text-xs {{ $invert ? 'bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A] border border-black dark:border-[#eeeeec]' : 'bg-transparent text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:bg-[#f5f5f2] dark:hover:bg-[#161615]' }} rounded-sm leading-normal transition-all cursor-pointer">
                     Invert
+                </a>
+
+                <a href="{{ route('smart-lists.show', [$smartList, 'invert' => $invert ? 1 : 0, 'kanban' => $kanban === 'horizontal' ? 'vertical' : 'horizontal']) }}"
+                    class="inline-block px-3 py-1 text-xs {{ $kanban === 'horizontal' ? 'bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A] border border-black dark:border-[#eeeeec]' : 'bg-transparent text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:bg-[#f5f5f2] dark:hover:bg-[#161615]' }} rounded-sm leading-normal transition-all cursor-pointer">
+                    Horizontal
                 </a>
 
                 <a href="{{ route('smart-lists.duplicate', $smartList) }}"
@@ -43,17 +48,32 @@
             </div>
         </div>
 
-        @forelse ($grouped as $bucket => $items)
-            <div class="flex flex-col gap-2">
-                <h2 class="text-sm font-medium text-[#706f6c] dark:text-[#A1A09A]">{{ $bucket }}</h2>
-                @foreach ($items as $item)
-                    <x-item-row :item="$item" />
-                @endforeach
+        @if ($kanban === 'horizontal')
+            <div class="flex gap-4 overflow-x-auto pb-2">
+                @forelse ($grouped as $bucket => $items)
+                    <div class="flex flex-col gap-2 w-72 shrink-0">
+                        <h2 class="text-sm font-medium text-[#706f6c] dark:text-[#A1A09A]">{{ $bucket }}</h2>
+                        @foreach ($items as $item)
+                            <x-item-row :item="$item" />
+                        @endforeach
+                    </div>
+                @empty
+                    <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">No matching items.</p>
+                @endforelse
             </div>
-        @empty
-            <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">
-                No matching items.
-            </p>
-        @endforelse
+        @else
+            @forelse ($grouped as $bucket => $items)
+                <div class="flex flex-col gap-2">
+                    <h2 class="text-sm font-medium text-[#706f6c] dark:text-[#A1A09A]">{{ $bucket }}</h2>
+                    @foreach ($items as $item)
+                        <x-item-row :item="$item" />
+                    @endforeach
+                </div>
+            @empty
+                <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">
+                    No matching items.
+                </p>
+            @endforelse
+        @endif
     </div>
 </x-layouts.app>

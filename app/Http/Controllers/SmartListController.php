@@ -59,6 +59,7 @@ class SmartListController extends Controller
     public function show(SmartList $smartList): View
     {
         $invert = request()->boolean('invert');
+        $kanban = request()->input('kanban', 'vertical');
 
         $items = $smartList->itemsQuery($invert)->get();
 
@@ -72,6 +73,7 @@ class SmartListController extends Controller
             'smartList' => $smartList,
             'grouped' => $grouped,
             'invert' => $invert,
+            'kanban' => $kanban,
         ]);
     }
 
