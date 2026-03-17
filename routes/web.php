@@ -13,6 +13,7 @@ use App\Http\Controllers\SmartListController;
 use App\Http\Controllers\Someday;
 use App\Http\Controllers\SyncItems;
 use App\Http\Controllers\SyncTagsController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\Tags;
 use App\Http\Controllers\Today;
 use App\Http\Controllers\Trash;
@@ -30,6 +31,8 @@ Route::get('/trash', Trash::class)->name('trash');
 
 Route::get('/tags', Tags::class)->name('tags');
 Route::post('/tags/sync', SyncTagsController::class)->name('tags.sync');
+Route::get('/tags/{tag}/edit', [TagController::class, 'edit'])->name('tags.edit');
+Route::patch('/tags/{tag}', [TagController::class, 'update'])->name('tags.update');
 Route::get('/tags/{tag}', ShowTag::class)->name('tags.show');
 Route::get('/later-projects', LaterProjects::class)->name('later-projects');
 

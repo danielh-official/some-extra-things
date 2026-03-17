@@ -3,18 +3,20 @@
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <h1 class="text-sm font-medium">Tags</h1>
+            </div>
+            <div class="flex gap-2">
                 <a href="{{ route('tags', ['sort' => $sort === 'count_desc' ? 'name' : 'count_desc']) }}"
-                    class="text-xs {{ $sort === 'count_desc' ? 'text-[#1b1b18] dark:text-white font-medium' : 'text-[#706f6c] dark:text-[#A1A09A]' }} hover:underline">
+                    class="inline-block px-3 py-1 bg-transparent text-xs text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm hover:bg-[#f5f5f2] dark:hover:bg-[#161615] transition-all cursor-pointer">
                     {{ $sort === 'count_desc' ? 'Sort: Count ↓' : 'Sort: Name' }}
                 </a>
+                <form method="POST" action="{{ route('tags.sync') }}">
+                    @csrf
+                    <button type="submit"
+                        class="inline-block px-3 py-1 bg-transparent text-xs text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm hover:bg-[#f5f5f2] dark:hover:bg-[#161615] transition-all cursor-pointer">
+                        Sync from Things
+                    </button>
+                </form>
             </div>
-            <form method="POST" action="{{ route('tags.sync') }}">
-                @csrf
-                <button type="submit"
-                    class="inline-block px-3 py-1 bg-transparent text-xs text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm hover:bg-[#f5f5f2] dark:hover:bg-[#161615] transition-all cursor-pointer">
-                    Sync from Things
-                </button>
-            </form>
         </div>
 
         @if (session('status'))
@@ -33,7 +35,8 @@
                         <p class="text-xs text-[#a0a09c] dark:text-[#60605c] px-2">{{ $tag->ancestryPath() }}</p>
                     @endif
                 </div>
-                <span class="text-xs text-[#706f6c] dark:text-[#A1A09A]">{{ $tag->items_count }} {{ Str::plural('item', $tag->items_count) }}</span>
+                <span class="text-xs text-[#706f6c] dark:text-[#A1A09A]">{{ $tag->items_count }}
+                    {{ Str::plural('item', $tag->items_count) }}</span>
             </div>
         @empty
             <p class="text-[#706f6c] dark:text-[#A1A09A]">No tags found</p>
