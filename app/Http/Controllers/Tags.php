@@ -14,7 +14,7 @@ class Tags extends Controller
 
         $request->session()->put('tags_sort', $sort);
 
-        $tags = Tag::withCount('items')
+        $tags = Tag::withCount(['items' => fn ($q) => $q->where('status', 'Open')->where('is_trashed', false)])
             ->when($sort === 'count_desc', fn ($q) => $q->orderByDesc('items_count')->orderBy('name'))
             ->when($sort !== 'count_desc', fn ($q) => $q->orderBy('name'))
             ->get();

@@ -14,6 +14,7 @@ class ShowTag extends Controller
         $tagModel = Tag::where('id', $tag)->orWhere('things_id', $tag)->firstOrFail();
 
         $items = Item::notTrashed()
+            ->where('status', 'Open')
             ->whereHas('tags', fn ($q) => $q->where('tags.id', $tagModel->id))
             ->orderBy('type')
             ->orderBy('creation_date')
