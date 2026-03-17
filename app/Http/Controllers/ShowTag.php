@@ -13,14 +13,25 @@ class ShowTag extends Controller
     {
         $tagModel = Tag::where('id', $tag)->orWhere('things_id', $tag)->firstOrFail();
 
-        $items = Item::notTrashed()
+        $all = Item::notTrashed()
             ->where('status', 'Open')
             ->whereHas('tags', fn ($q) => $q->where('tags.id', $tagModel->id))
             ->orderBy('type')
             ->orderBy('creation_date')
-            ->get()
-            ->groupBy('type');
+            ->get();
 
-        return view('tags.show', compact('tagModel', 'items'));
+        $items = $all->filter(fn (Item $item) =>
+            $item->start !== 'Someday' && ! ($item->start_date && $item->start_date->gt(today()))
+        )->groupBy('type');
+
+        $upcomingItems = $all->filter(fn (Item $item) =>
+            $item->start !== 'Someday' && $item->start_date && $item->start_date->gt(today())
+        )->groupBy('type');
+
+        $somedayItems = $all->filter(fn (Item $item) =>
+            $item->start === 'Someday'
+        )->groupBy('type');
+
+        return view('tags.show', compact('tagModel', 'items', 'upcomingItems', 'somedayItems'));
     }
 }
