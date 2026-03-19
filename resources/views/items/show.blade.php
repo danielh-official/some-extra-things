@@ -13,8 +13,12 @@
             </div>
             @if ($item->parent)
                 <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">
-                    @if ($item->parent_id)
-                        <a href="{{ route('projects.show', $item->parent_id) }}">{{ $item->parent }}</a>
+                    @if ($parentItem)
+                        @if ($parentItem->type === 'Area')
+                            <a href="{{ route('areas.show', $parentItem) }}">{{ $item->parent }}</a>
+                        @else
+                            <a href="{{ route('projects.show', $parentItem) }}">{{ $item->parent }}</a>
+                        @endif
                     @else
                         {{ $item->parent }}
                     @endif

@@ -15,13 +15,21 @@ class ShowItem extends Controller
      */
     public function __invoke(Request $request, Item $item): View|RedirectResponse
     {
-        if ($item->type === 'Heading') {
-            $parent = $item->parent_id ? Item::find($item->parent_id) : null;
-            if ($parent) {
-                return redirect()->route('projects.show', $parent);
+        $routeName = $request->route()->getName();
+
+        if ($routeName === 'todos.show') {
+            abort_if($item->type !== 'To-Do', 404);
+        } elseif ($routeName === 'projects.show') {
+            if ($item->type === 'Heading') {
+                $parent = $item->parent_id ? Item::find($item->parent_id) : null;
+                if ($parent) {
+                    return redirect()->route('projects.show', $parent);
+                }
+
+                abort(404);
             }
 
-            abort(404);
+            abort_if($item->type !== 'Project', 404);
         }
 
         $notesHtml = null;
@@ -29,6 +37,8 @@ class ShowItem extends Controller
             $converter = new CommonMarkConverter(['html_input' => 'strip', 'allow_unsafe_links' => false]);
             $notesHtml = $converter->convert($item->notes)->getContent();
         }
+
+        $parentItem = $item->parent_id ? Item::find($item->parent_id) : null;
 
         $childTodos = null;
         if ($item->type === 'Project') {
@@ -41,6 +51,6 @@ class ShowItem extends Controller
                 ->groupBy(fn (Item $child) => $child->heading ?? '');
         }
 
-        return view('items.show', compact('item', 'notesHtml', 'childTodos'));
+        return view('items.show', compact('item', 'notesHtml', 'childTodos', 'parentItem'));
     }
 }
