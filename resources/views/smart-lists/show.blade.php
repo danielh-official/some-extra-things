@@ -1,31 +1,30 @@
 <x-layouts.app>
-    <div class="flex flex-col gap-4 w-full"
-        x-data="{
-            search: '',
-            open: false,
-            init() {
-                window.addEventListener('keydown', (e) => {
-                    if (e.metaKey && e.key === 'f') {
-                        e.preventDefault();
-                        this.open = true;
-                        this.$nextTick(() => this.$refs.search.focus());
-                    }
-                    if (e.key === 'Escape' && this.open) {
-                        this.open = false;
-                        this.search = '';
-                    }
-                });
-            },
-            matchesItem(el) {
-                if (!this.search) return true;
-                const q = this.search.toLowerCase();
-                return (el.dataset.title || '').toLowerCase().includes(q) || (el.dataset.notes || '').toLowerCase().includes(q);
-            },
-            matchesGroup(el) {
-                if (!this.search) return true;
-                return Array.from(el.querySelectorAll('[data-item-search]')).some(i => this.matchesItem(i));
-            }
-        }">
+    <div class="flex flex-col gap-4 w-full" x-data="{
+        search: '',
+        open: false,
+        init() {
+            window.addEventListener('keydown', (e) => {
+                if (e.metaKey && e.key === 'f') {
+                    e.preventDefault();
+                    this.open = true;
+                    this.$nextTick(() => this.$refs.search.focus());
+                }
+                if (e.key === 'Escape' && this.open) {
+                    this.open = false;
+                    this.search = '';
+                }
+            });
+        },
+        matchesItem(el) {
+            if (!this.search) return true;
+            const q = this.search.toLowerCase();
+            return (el.dataset.title || '').toLowerCase().includes(q) || (el.dataset.notes || '').toLowerCase().includes(q);
+        },
+        matchesGroup(el) {
+            if (!this.search) return true;
+            return Array.from(el.querySelectorAll('[data-item-search]')).some(i => this.matchesItem(i));
+        }
+    }">
         <div>
             <a href="{{ route('smart-lists.index') }}">&larr; Go Back</a>
         </div>
@@ -46,7 +45,7 @@
                     @csrf
                     <button type="submit"
                         class="inline-block px-3 py-1 text-xs {{ $smartList->is_pinned_to_sidebar ? 'bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A] border border-black dark:border-[#eeeeec]' : 'bg-transparent text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:bg-[#f5f5f2] dark:hover:bg-[#161615]' }} rounded-sm leading-normal transition-all cursor-pointer">
-                        Pin to Sidebar
+                        {{ $smartList->is_pinned_to_sidebar ? 'Unpin from Sidebar' : 'Pin to Sidebar' }}
                     </button>
                 </form>
 
@@ -97,7 +96,9 @@
                         <h2 class="text-sm font-medium text-[#706f6c] dark:text-[#A1A09A]">{{ $bucket }}</h2>
                         @if ($bucket === 'Today')
                             @foreach ($items->where('evening', false) as $item)
-                                <div data-item-search data-title="{{ $item->title }}" data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)" class="min-w-0 truncate">
+                                <div data-item-search data-title="{{ $item->title }}"
+                                    data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)"
+                                    class="min-w-0 truncate">
                                     <x-item-row :item="$item" hide-tags />
                                 </div>
                             @endforeach
@@ -105,30 +106,40 @@
                                 <div x-show="matchesGroup($el)">
                                     <p class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A] mt-2">Evening</p>
                                     @foreach ($items->where('evening', true) as $item)
-                                        <div data-item-search data-title="{{ $item->title }}" data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)" class="min-w-0 truncate">
+                                        <div data-item-search data-title="{{ $item->title }}"
+                                            data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)"
+                                            class="min-w-0 truncate">
                                             <x-item-row :item="$item" hide-tags />
                                         </div>
                                     @endforeach
                                 </div>
                             @endif
                         @elseif ($bucket === 'Upcoming')
-                            @foreach ($items->groupBy(fn ($item) => $item->start_date->format('Y-m-d')) as $date => $dateItems)
+                            @foreach ($items->groupBy(fn($item) => $item->start_date->format('Y-m-d')) as $date => $dateItems)
                                 @php $days = (int) today()->diffInDays(\Carbon\Carbon::parse($date)); @endphp
                                 <div x-show="matchesGroup($el)">
-                                    <p class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A] mt-2 first:mt-0">{{ \Carbon\Carbon::parse($date)->format('M j') }} <span class="font-normal">({{ $days === 1 ? 'Tomorrow' : $days.' days' }})</span></p>
+                                    <p class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A] mt-2 first:mt-0">
+                                        {{ \Carbon\Carbon::parse($date)->format('M j') }} <span
+                                            class="font-normal">({{ $days === 1 ? 'Tomorrow' : $days . ' days' }})</span>
+                                    </p>
                                     @foreach ($dateItems as $item)
-                                        <div data-item-search data-title="{{ $item->title }}" data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)" class="min-w-0 truncate">
+                                        <div data-item-search data-title="{{ $item->title }}"
+                                            data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)"
+                                            class="min-w-0 truncate">
                                             <x-item-row :item="$item" hide-tags />
                                         </div>
                                     @endforeach
                                 </div>
                             @endforeach
                         @elseif ($bucket === 'Logbook')
-                            @foreach ($items->sortByDesc('completion_date')->groupBy(fn ($item) => $item->completion_date?->toDateString() ?? 'Unknown') as $date => $dateItems)
+                            @foreach ($items->sortByDesc('completion_date')->groupBy(fn($item) => $item->completion_date?->toDateString() ?? 'Unknown') as $date => $dateItems)
                                 <div x-show="matchesGroup($el)">
-                                    <p class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A] mt-2 first:mt-0">{{ \Carbon\Carbon::parse($date)->format('M j, Y') }}</p>
+                                    <p class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A] mt-2 first:mt-0">
+                                        {{ \Carbon\Carbon::parse($date)->format('M j, Y') }}</p>
                                     @foreach ($dateItems as $item)
-                                        <div data-item-search data-title="{{ $item->title }}" data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)" class="min-w-0 truncate">
+                                        <div data-item-search data-title="{{ $item->title }}"
+                                            data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)"
+                                            class="min-w-0 truncate">
                                             <x-item-row :item="$item" hide-tags />
                                         </div>
                                     @endforeach
@@ -136,7 +147,9 @@
                             @endforeach
                         @else
                             @foreach ($items as $item)
-                                <div data-item-search data-title="{{ $item->title }}" data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)" class="min-w-0 truncate">
+                                <div data-item-search data-title="{{ $item->title }}"
+                                    data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)"
+                                    class="min-w-0 truncate">
                                     <x-item-row :item="$item" hide-tags />
                                 </div>
                             @endforeach
@@ -152,7 +165,8 @@
                     <h2 class="text-sm font-medium text-[#706f6c] dark:text-[#A1A09A]">{{ $bucket }}</h2>
                     @if ($bucket === 'Today')
                         @foreach ($items->where('evening', false) as $item)
-                            <div data-item-search data-title="{{ $item->title }}" data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)">
+                            <div data-item-search data-title="{{ $item->title }}"
+                                data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)">
                                 <x-item-row :item="$item" />
                             </div>
                         @endforeach
@@ -160,30 +174,36 @@
                             <div x-show="matchesGroup($el)">
                                 <p class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A] mt-2">Evening</p>
                                 @foreach ($items->where('evening', true) as $item)
-                                    <div data-item-search data-title="{{ $item->title }}" data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)">
+                                    <div data-item-search data-title="{{ $item->title }}"
+                                        data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)">
                                         <x-item-row :item="$item" />
                                     </div>
                                 @endforeach
                             </div>
                         @endif
                     @elseif ($bucket === 'Upcoming')
-                        @foreach ($items->groupBy(fn ($item) => $item->start_date->format('Y-m-d')) as $date => $dateItems)
+                        @foreach ($items->groupBy(fn($item) => $item->start_date->format('Y-m-d')) as $date => $dateItems)
                             @php $days = (int) today()->diffInDays(\Carbon\Carbon::parse($date)); @endphp
                             <div x-show="matchesGroup($el)">
-                                <p class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A] mt-2 first:mt-0">{{ \Carbon\Carbon::parse($date)->format('M j') }} <span class="font-normal">({{ $days === 1 ? 'Tomorrow' : $days.' days' }})</span></p>
+                                <p class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A] mt-2 first:mt-0">
+                                    {{ \Carbon\Carbon::parse($date)->format('M j') }} <span
+                                        class="font-normal">({{ $days === 1 ? 'Tomorrow' : $days . ' days' }})</span></p>
                                 @foreach ($dateItems as $item)
-                                    <div data-item-search data-title="{{ $item->title }}" data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)">
+                                    <div data-item-search data-title="{{ $item->title }}"
+                                        data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)">
                                         <x-item-row :item="$item" />
                                     </div>
                                 @endforeach
                             </div>
                         @endforeach
                     @elseif ($bucket === 'Logbook')
-                        @foreach ($items->sortByDesc('completion_date')->groupBy(fn ($item) => $item->completion_date?->toDateString() ?? 'Unknown') as $date => $dateItems)
+                        @foreach ($items->sortByDesc('completion_date')->groupBy(fn($item) => $item->completion_date?->toDateString() ?? 'Unknown') as $date => $dateItems)
                             <div x-show="matchesGroup($el)">
-                                <p class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A] mt-2 first:mt-0">{{ \Carbon\Carbon::parse($date)->format('M j, Y') }}</p>
+                                <p class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A] mt-2 first:mt-0">
+                                    {{ \Carbon\Carbon::parse($date)->format('M j, Y') }}</p>
                                 @foreach ($dateItems as $item)
-                                    <div data-item-search data-title="{{ $item->title }}" data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)">
+                                    <div data-item-search data-title="{{ $item->title }}"
+                                        data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)">
                                         <x-item-row :item="$item" />
                                     </div>
                                 @endforeach
@@ -191,7 +211,8 @@
                         @endforeach
                     @else
                         @foreach ($items as $item)
-                            <div data-item-search data-title="{{ $item->title }}" data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)">
+                            <div data-item-search data-title="{{ $item->title }}"
+                                data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)">
                                 <x-item-row :item="$item" />
                             </div>
                         @endforeach
