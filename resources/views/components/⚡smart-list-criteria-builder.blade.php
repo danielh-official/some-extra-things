@@ -1,192 +1,287 @@
 <?php
-
 use App\Models\Tag;
 use Livewire\Component;
 
-new class extends Component
-{
+new class extends Component {
     public string $logic = 'and';
 
-    /** @var array<int, array{tag: string, operator: string}> */
+    /** @var array<int, array<string, mixed>> */
     public array $conditions = [];
 
-    public function mount(mixed $criteria = null): void
+    /** @var array<int, string> */
+    public array $tags = [];
+
+    public function mount(?string $criteria = null): void
     {
-        if (is_string($criteria) && $criteria !== '') {
-            $criteria = json_decode($criteria, true);
+        $this->tags = Tag::orderBy('name')->pluck('name')->all();
+        if ($criteria) {
+            $decoded = json_decode($criteria, true);
+
+            if (is_array($decoded)) {
+                if (($decoded['type'] ?? null) === 'tag') {
+                    $this->conditions = [
+                        [
+                            'type' => 'tag',
+                            'tag' => $decoded['tag'] ?? '',
+                            'operator' => $decoded['operator'] ?? 'equals',
+                        ],
+                    ];
+                } elseif (($decoded['type'] ?? null) === 'group') {
+                    $this->logic = $decoded['logic'] ?? 'and';
+                    $this->conditions = $this->normalizeConditions($decoded['conditions'] ?? []);
+                }
+            }
         }
 
-        if (! is_array($criteria) || empty($criteria)) {
-            $this->conditions = [['tag' => '', 'operator' => 'equals']];
-
-            return;
-        }
-
-        if (($criteria['type'] ?? null) === 'tag') {
-            $this->conditions = [[
-                'tag' => $criteria['tag'] ?? '',
-                'operator' => $criteria['operator'] ?? 'equals',
-            ]];
-
-            return;
-        }
-
-        if (($criteria['type'] ?? null) === 'group') {
-            $this->logic = $criteria['logic'] ?? 'and';
-            $this->conditions = array_values(array_map(
-                fn ($c) => ['tag' => $c['tag'] ?? '', 'operator' => $c['operator'] ?? 'equals'],
-                $criteria['conditions'] ?? []
-            ));
-        }
-    }
-
-    public function addCondition(): void
-    {
-        $this->conditions[] = ['tag' => '', 'operator' => 'equals'];
-    }
-
-    public function removeCondition(int $index): void
-    {
-        array_splice($this->conditions, $index, 1);
-
-        if ($this->conditions === []) {
-            $this->conditions = [['tag' => '', 'operator' => 'equals']];
+        if (empty($this->conditions)) {
+            $this->conditions = [['type' => 'tag', 'tag' => '', 'operator' => 'equals']];
         }
     }
 
     /**
-     * Build the criteria array from current state.
+     * Normalize raw criteria conditions into a consistent shape.
      *
-     * @return array<string, mixed>
+     * @param  array<int, array<string, mixed>>  $conditions
+     * @return array<int, array<string, mixed>>
      */
+    protected function normalizeConditions(array $conditions): array
+    {
+        return array_values(
+            array_map(function (array $condition): array {
+                if (($condition['type'] ?? null) === 'group') {
+                    $subConditions = array_filter($condition['conditions'] ?? [], fn($c) => is_array($c) && ($c['type'] ?? null) === 'tag');
+
+                    return [
+                        'type' => 'group',
+                        'logic' => $condition['logic'] ?? 'and',
+                        'conditions' => array_values(
+                            array_map(
+                                fn(array $c) => [
+                                    'type' => 'tag',
+                                    'tag' => $c['tag'] ?? '',
+                                    'operator' => $c['operator'] ?? 'equals',
+                                ],
+                                $subConditions,
+                            ),
+                        ),
+                    ];
+                }
+
+                return [
+                    'type' => 'tag',
+                    'tag' => $condition['tag'] ?? '',
+                    'operator' => $condition['operator'] ?? 'equals',
+                ];
+            }, $conditions),
+        );
+    }
+
+    public function addCondition(?int $groupIndex = null): void
+    {
+        $tagCondition = ['type' => 'tag', 'tag' => '', 'operator' => 'equals'];
+
+        if ($groupIndex !== null && isset($this->conditions[$groupIndex]) && ($this->conditions[$groupIndex]['type'] ?? null) === 'group') {
+            $this->conditions[$groupIndex]['conditions'][] = $tagCondition;
+        } else {
+            $this->conditions[] = $tagCondition;
+        }
+    }
+
+    public function addGroup(): void
+    {
+        $this->conditions[] = [
+            'type' => 'group',
+            'logic' => 'and',
+            'conditions' => [['type' => 'tag', 'tag' => '', 'operator' => 'equals']],
+        ];
+    }
+
+    public function removeCondition(int $index, ?int $groupIndex = null): void
+    {
+        if ($groupIndex !== null && isset($this->conditions[$groupIndex]) && ($this->conditions[$groupIndex]['type'] ?? null) === 'group') {
+            array_splice($this->conditions[$groupIndex]['conditions'], $index, 1);
+
+            if (empty($this->conditions[$groupIndex]['conditions'])) {
+                $this->conditions[$groupIndex]['conditions'] = [['type' => 'tag', 'tag' => '', 'operator' => 'equals']];
+            }
+        } else {
+            array_splice($this->conditions, $index, 1);
+
+            if (empty($this->conditions)) {
+                $this->conditions = [['type' => 'tag', 'tag' => '', 'operator' => 'equals']];
+            }
+        }
+    }
+
+    public function removeGroup(int $index): void
+    {
+        array_splice($this->conditions, $index, 1);
+
+        if (empty($this->conditions)) {
+            $this->conditions = [['type' => 'tag', 'tag' => '', 'operator' => 'equals']];
+        }
+    }
+
+    public function toggleLogic(?int $groupIndex = null): void
+    {
+        if ($groupIndex !== null && isset($this->conditions[$groupIndex]) && ($this->conditions[$groupIndex]['type'] ?? null) === 'group') {
+            $this->conditions[$groupIndex]['logic'] = ($this->conditions[$groupIndex]['logic'] ?? 'and') === 'and' ? 'or' : 'and';
+        } else {
+            $this->logic = $this->logic === 'and' ? 'or' : 'and';
+        }
+    }
+
     public function getCriteriaJson(): string
     {
-        $validConditions = array_values(array_filter(
-            $this->conditions,
-            fn ($c) => isset($c['tag']) && $c['tag'] !== ''
-        ));
+        $filled = array_values(
+            array_filter($this->conditions, function (array $condition): bool {
+                if (($condition['type'] ?? null) === 'group') {
+                    return count(array_filter($condition['conditions'] ?? [], fn(array $c) => isset($c['tag']) && $c['tag'] !== '')) > 0;
+                }
 
-        if (empty($validConditions)) {
+                return isset($condition['tag']) && $condition['tag'] !== '';
+            }),
+        );
+
+        if (empty($filled)) {
             return '';
         }
 
-        if (count($validConditions) === 1) {
-            $criteria = [
+        if (count($filled) === 1 && ($filled[0]['type'] ?? null) === 'tag') {
+            return json_encode([
                 'type' => 'tag',
-                'tag' => $validConditions[0]['tag'],
-                'operator' => $validConditions[0]['operator'],
-            ];
-        } else {
-            $criteria = [
-                'type' => 'group',
-                'logic' => $this->logic,
-                'conditions' => array_map(
-                    fn ($c) => ['type' => 'tag', 'tag' => $c['tag'], 'operator' => $c['operator']],
-                    $validConditions
-                ),
-            ];
+                'tag' => $filled[0]['tag'],
+                'operator' => $filled[0]['operator'] ?? 'equals',
+            ]);
         }
 
-        return json_encode($criteria, JSON_PRETTY_PRINT);
-    }
+        $serialized = array_map(function (array $condition): array {
+            if (($condition['type'] ?? null) === 'group') {
+                $subFilled = array_values(array_filter($condition['conditions'] ?? [], fn(array $c) => isset($c['tag']) && $c['tag'] !== ''));
 
-    public function with(): array
-    {
-        return [
-            'availableTags' => Tag::orderBy('name')->get(),
-            'criteriaJson' => $this->getCriteriaJson(),
-        ];
+                return [
+                    'type' => 'group',
+                    'logic' => $condition['logic'] ?? 'and',
+                    'conditions' => array_map(
+                        fn(array $c) => [
+                            'type' => 'tag',
+                            'tag' => $c['tag'],
+                            'operator' => $c['operator'] ?? 'equals',
+                        ],
+                        $subFilled,
+                    ),
+                ];
+            }
+
+            return [
+                'type' => 'tag',
+                'tag' => $condition['tag'],
+                'operator' => $condition['operator'] ?? 'equals',
+            ];
+        }, $filled);
+
+        return json_encode([
+            'type' => 'group',
+            'logic' => $this->logic,
+            'conditions' => $serialized,
+        ]);
     }
 };
 ?>
 
-<div class="flex flex-col gap-3">
-    {{-- Logic toggle (only shown when more than one condition) --}}
-    @if(count($conditions) > 1)
-        <div class="flex items-center gap-2">
-            <span class="text-xs text-[#706f6c] dark:text-[#A1A09A]">Match</span>
-            <div class="flex rounded-sm border border-[#e3e3e0] dark:border-[#3E3E3A] overflow-hidden text-xs">
-                <button
-                    type="button"
-                    wire:click="$set('logic', 'and')"
-                    class="px-2.5 py-1 transition-colors {{ $logic === 'and' ? 'bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A]' : 'bg-[#FDFDFC] dark:bg-[#161615] text-[#706f6c] dark:text-[#A1A09A] hover:bg-[#f5f5f3] dark:hover:bg-[#1e1e1c]' }}"
-                >
-                    ALL
+<div>
+    <input type="hidden" name="criteria" value="{{ $this->getCriteriaJson() }}">
+
+    <div class="flex flex-col gap-1.5">
+        {{-- Root logic toggle (only shown when multiple conditions) --}}
+        @if (count($conditions) > 1)
+            <div class="flex items-center gap-2 mb-1">
+                <span class="text-xs text-[#706f6c] dark:text-[#A1A09A]">Match</span>
+                <button type="button" wire:click="toggleLogic"
+                    class="text-xs px-2 py-0.5 rounded border border-[#e3e3e0] dark:border-[#3E3E3A] bg-[#FDFDFC] dark:bg-[#161615] hover:bg-[#f5f5f3] dark:hover:bg-[#1e1e1c]">
+                    {{ strtoupper($logic) }}
                 </button>
-                <button
-                    type="button"
-                    wire:click="$set('logic', 'or')"
-                    class="px-2.5 py-1 transition-colors border-l border-[#e3e3e0] dark:border-[#3E3E3A] {{ $logic === 'or' ? 'bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A]' : 'bg-[#FDFDFC] dark:bg-[#161615] text-[#706f6c] dark:text-[#A1A09A] hover:bg-[#f5f5f3] dark:hover:bg-[#1e1e1c]' }}"
-                >
-                    ANY
-                </button>
+                <span class="text-xs text-[#706f6c] dark:text-[#A1A09A]">of the following</span>
             </div>
-            <span class="text-xs text-[#706f6c] dark:text-[#A1A09A]">of the following conditions</span>
-        </div>
-    @endif
+        @endif
 
-    {{-- Conditions list --}}
-    <div class="flex flex-col gap-2">
-        @foreach($conditions as $index => $condition)
-            <div wire:key="condition-{{ $index }}" class="flex items-center gap-2">
-                <span class="text-xs text-[#706f6c] dark:text-[#A1A09A] w-6 shrink-0">Tag</span>
+        @foreach ($conditions as $idx => $condition)
+            @if (($condition['type'] ?? 'tag') === 'tag')
+                {{-- Tag condition row --}}
+                <div wire:key="condition-{{ $idx }}" class="flex items-center gap-2">
+                    <span class="text-xs text-[#706f6c] dark:text-[#A1A09A] w-6 shrink-0">tag</span>
+                    <select wire:model.live="conditions.{{ $idx }}.operator"
+                        class="text-xs border border-[#e3e3e0] dark:border-[#3E3E3A] rounded px-1 py-0.5 bg-[#FDFDFC] dark:bg-[#161615]">
+                        <option value="equals">equals</option>
+                        <option value="not_equals">does not equal</option>
+                    </select>
+                    <input type="text" wire:model.live="conditions.{{ $idx }}.tag" list="tag-options"
+                        placeholder="tag name"
+                        class="text-xs border border-[#e3e3e0] dark:border-[#3E3E3A] rounded px-2 py-0.5 bg-[#FDFDFC] dark:bg-[#161615] flex-1 min-w-0">
+                    <button type="button" wire:click="removeCondition({{ $idx }})"
+                        class="text-xs text-[#706f6c] dark:text-[#A1A09A] hover:text-red-500 shrink-0">×</button>
+                </div>
+            @else
+                {{-- Sub-group --}}
+                <div wire:key="group-{{ $idx }}"
+                    class="flex flex-col gap-1 pl-3 border-l-2 border-[#e3e3e0] dark:border-[#3E3E3A]">
+                    {{-- Sub-group logic toggle --}}
+                    @if (count($condition['conditions'] ?? []) > 1)
+                        <div class="flex items-center gap-2 mb-0.5">
+                            <span class="text-xs text-[#706f6c] dark:text-[#A1A09A]">Match</span>
+                            <button type="button" wire:click="toggleLogic({{ $idx }})"
+                                class="text-xs px-2 py-0.5 rounded border border-[#e3e3e0] dark:border-[#3E3E3A] bg-[#FDFDFC] dark:bg-[#161615] hover:bg-[#f5f5f3] dark:hover:bg-[#1e1e1c]">
+                                {{ strtoupper($condition['logic'] ?? 'and') }}
+                            </button>
+                            <span class="text-xs text-[#706f6c] dark:text-[#A1A09A]">of the following</span>
+                        </div>
+                    @endif
 
-                {{-- Operator select --}}
-                <select
-                    wire:model.live="conditions.{{ $index }}.operator"
-                    class="border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm px-2 py-1 text-xs bg-[#FDFDFC] dark:bg-[#161615] text-[#1b1b18] dark:text-[#EDEDEC]"
-                >
-                    <option value="equals">is</option>
-                    <option value="not_equals">is not</option>
-                </select>
-
-                {{-- Tag select --}}
-                <select
-                    wire:model.live="conditions.{{ $index }}.tag"
-                    class="flex-1 border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm px-2 py-1 text-xs bg-[#FDFDFC] dark:bg-[#161615] text-[#1b1b18] dark:text-[#EDEDEC]"
-                >
-                    <option value="">— select a tag —</option>
-                    @foreach($availableTags as $tag)
-                        <option value="{{ $tag->name }}" {{ ($condition['tag'] ?? '') === $tag->name ? 'selected' : '' }}>
-                            {{ $tag->name }}
-                        </option>
+                    @foreach ($condition['conditions'] ?? [] as $subIdx => $subCondition)
+                        <div wire:key="group-{{ $idx }}-condition-{{ $subIdx }}"
+                            class="flex items-center gap-2">
+                            <span class="text-xs text-[#706f6c] dark:text-[#A1A09A] w-6 shrink-0">tag</span>
+                            <select
+                                wire:model.live="conditions.{{ $idx }}.conditions.{{ $subIdx }}.operator"
+                                class="text-xs border border-[#e3e3e0] dark:border-[#3E3E3A] rounded px-1 py-0.5 bg-[#FDFDFC] dark:bg-[#161615]">
+                                <option value="equals">equals</option>
+                                <option value="not_equals">does not equal</option>
+                            </select>
+                            <input type="text"
+                                wire:model.live="conditions.{{ $idx }}.conditions.{{ $subIdx }}.tag"
+                                list="tag-options" placeholder="tag name"
+                                class="text-xs border border-[#e3e3e0] dark:border-[#3E3E3A] rounded px-2 py-0.5 bg-[#FDFDFC] dark:bg-[#161615] flex-1 min-w-0">
+                            <button type="button"
+                                wire:click="removeCondition({{ $subIdx }}, {{ $idx }})"
+                                class="text-xs text-[#706f6c] dark:text-[#A1A09A] hover:text-red-500 shrink-0">×</button>
+                        </div>
                     @endforeach
-                </select>
 
-                {{-- Remove condition button --}}
-                <button
-                    type="button"
-                    wire:click="removeCondition({{ $index }})"
-                    class="text-[#706f6c] dark:text-[#A1A09A] hover:text-red-500 dark:hover:text-red-400 transition-colors text-sm leading-none shrink-0"
-                    title="Remove condition"
-                >
-                    &times;
-                </button>
-            </div>
+                    <div class="flex items-center gap-3 mt-0.5">
+                        <button type="button" wire:click="addCondition({{ $idx }})"
+                            class="text-xs text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-white">+
+                            condition</button>
+                        <button type="button" wire:click="removeGroup({{ $idx }})"
+                            class="text-xs text-red-400 hover:text-red-600 ml-auto">Remove group</button>
+                    </div>
+                </div>
+            @endif
         @endforeach
+
+        {{-- Add buttons --}}
+        <div class="flex items-center gap-3 mt-1">
+            <button type="button" wire:click="addCondition"
+                class="text-xs text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-white">+ Add
+                condition</button>
+            <button type="button" wire:click="addGroup"
+                class="text-xs text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-white">+ Add
+                group</button>
+        </div>
     </div>
 
-    {{-- Add condition button --}}
-    <div>
-        <button
-            type="button"
-            wire:click="addCondition"
-            class="text-xs text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] transition-colors"
-        >
-            + Add condition
-        </button>
-    </div>
-
-    {{-- Hidden input carrying the JSON for the parent form --}}
-    <input type="hidden" name="criteria" value="{{ $criteriaJson }}">
-
-    {{-- Read-only preview --}}
-    <div class="flex flex-col gap-1 mt-1">
-        <label class="text-[11px] text-[#706f6c] dark:text-[#A1A09A]">Resolves to</label>
-        <textarea
-            rows="4"
-            readonly
-            class="border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm px-2 py-1 text-xs bg-[#f5f5f3] dark:bg-[#0f0f0e] font-mono text-[#706f6c] dark:text-[#A1A09A] cursor-default select-all"
-        >{{ $criteriaJson }}</textarea>
-    </div>
+    <datalist id="tag-options">
+        @foreach ($tags as $tag)
+            <option value="{{ $tag }}">
+        @endforeach
+    </datalist>
 </div>

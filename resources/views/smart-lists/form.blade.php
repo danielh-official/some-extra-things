@@ -3,7 +3,7 @@
 @endphp
 
 @props([
-    'cancelLink' => route('smart-lists.index')
+    'cancelLink' => route('smart-lists.index'),
 ])
 
 <div
@@ -18,7 +18,8 @@
         <div class="flex flex-col gap-1">
             <label for="name" class="text-xs font-medium">Name</label>
             <input id="name" name="name" type="text" value="{{ old('name', $smartList->name) }}"
-                class="border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm px-2 py-1 text-xs bg-[#FDFDFC] dark:bg-[#161615]" required>
+                class="border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm px-2 py-1 text-xs bg-[#FDFDFC] dark:bg-[#161615]"
+                required>
             @error('name')
                 <p class="text-xs text-red-600">{{ $message }}</p>
             @enderror
@@ -26,7 +27,7 @@
 
         <div class="flex flex-col gap-1">
             <label class="text-xs font-medium">Criteria</label>
-            @livewire('smart-list-criteria-builder', ['criteria' => $smartList->criteria ? json_encode($smartList->criteria) : null])
+            <livewire:smart-list-criteria-builder :criteria="$smartList->criteria ? json_encode($smartList->criteria) : null" />
             @error('criteria')
                 <p class="text-xs text-red-600">{{ $message }}</p>
             @enderror
@@ -43,4 +44,3 @@
         </button>
     </div>
 </div>
-
