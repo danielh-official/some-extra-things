@@ -43,6 +43,7 @@
             </div>
             <div class="flex gap-2">
                 <a href="{{ route('tags.index', ['sort' => $sort === 'count_desc' ? 'name' : 'count_desc']) }}"
+                    aria-label="{{ $sort === 'count_desc' ? 'Currently sorting by count descending, click to sort by name' : 'Currently sorting by name, click to sort by count descending' }}"
                     class="inline-block px-3 py-1 bg-transparent text-xs text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm hover:bg-[#f5f5f2] dark:hover:bg-[#161615] transition-all cursor-pointer">
                     {{ $sort === 'count_desc' ? 'Sort: Count ↓' : 'Sort: Name' }}
                 </a>
@@ -57,7 +58,7 @@
         </div>
 
         <div x-show="open" x-cloak>
-            <input x-ref="search" x-model="search" type="text" placeholder="Filter tags…"
+            <input x-ref="search" x-model="search" type="text" placeholder="Filter tags…" aria-label="Filter tags"
                 class="w-full border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm px-2 py-1 text-xs bg-[#FDFDFC] dark:bg-[#161615] outline-none focus:border-[#a0a09c] dark:focus:border-[#60605c]">
         </div>
 

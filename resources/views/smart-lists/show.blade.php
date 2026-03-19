@@ -43,20 +43,21 @@
             <div class="flex items-center gap-2">
                 <form method="PATCH" action="{{ route('smart-lists.pin', $smartList) }}">
                     @csrf
-                    <button type="submit"
+                    <button type="submit" aria-pressed="{{ $smartList->is_pinned_to_sidebar ? 'true' : 'false' }}"
                         class="inline-block px-3 py-1 text-xs {{ $smartList->is_pinned_to_sidebar ? 'bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A] border border-black dark:border-[#eeeeec]' : 'bg-transparent text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:bg-[#f5f5f2] dark:hover:bg-[#161615]' }} rounded-sm leading-normal transition-all cursor-pointer">
                         {{ $smartList->is_pinned_to_sidebar ? 'Unpin from Sidebar' : 'Pin to Sidebar' }}
                     </button>
                 </form>
 
                 <a href="{{ route('smart-lists.show', [$smartList, 'invert' => $invert ? 0 : 1]) }}"
+                    aria-pressed="{{ $invert ? 'true' : 'false' }}"
                     class="inline-block px-3 py-1 text-xs {{ $invert ? 'bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A] border border-black dark:border-[#eeeeec]' : 'bg-transparent text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:bg-[#f5f5f2] dark:hover:bg-[#161615]' }} rounded-sm leading-normal transition-all cursor-pointer">
                     Invert
                 </a>
 
                 <form method="PATCH" action="{{ route('smart-lists.kanban', $smartList) }}">
                     @csrf
-                    <button type="submit"
+                    <button type="submit" aria-pressed="{{ $kanban === 'horizontal' ? 'true' : 'false' }}"
                         class="inline-block px-3 py-1 text-xs {{ $kanban === 'horizontal' ? 'bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A] border border-black dark:border-[#eeeeec]' : 'bg-transparent text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:bg-[#f5f5f2] dark:hover:bg-[#161615]' }} rounded-sm leading-normal transition-all cursor-pointer">
                         Horizontal
                     </button>
@@ -85,7 +86,7 @@
         </div>
 
         <div x-show="open" x-cloak>
-            <input x-ref="search" x-model="search" type="text" placeholder="Filter items…"
+            <input x-ref="search" x-model="search" type="text" placeholder="Filter items…" aria-label="Filter items"
                 class="w-full border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm px-2 py-1 text-xs bg-[#FDFDFC] dark:bg-[#161615] outline-none focus:border-[#a0a09c] dark:focus:border-[#60605c] mb-2">
         </div>
 

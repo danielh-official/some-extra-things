@@ -211,14 +211,16 @@ new class extends Component {
                 <div wire:key="condition-{{ $idx }}" class="flex items-center gap-2">
                     <span class="text-xs text-[#706f6c] dark:text-[#A1A09A] w-6 shrink-0">tag</span>
                     <select wire:model.live="conditions.{{ $idx }}.operator"
+                        aria-label="Operator"
                         class="text-xs border border-[#e3e3e0] dark:border-[#3E3E3A] rounded px-1 py-0.5 bg-[#FDFDFC] dark:bg-[#161615]">
                         <option value="equals">equals</option>
                         <option value="not_equals">does not equal</option>
                     </select>
                     <input type="text" wire:model.live="conditions.{{ $idx }}.tag" list="tag-options"
                         placeholder="tag name"
+                        aria-label="Tag name"
                         class="text-xs border border-[#e3e3e0] dark:border-[#3E3E3A] rounded px-2 py-0.5 bg-[#FDFDFC] dark:bg-[#161615] flex-1 min-w-0">
-                    <button type="button" wire:click="removeCondition({{ $idx }})"
+                    <button type="button" wire:click="removeCondition({{ $idx }})" aria-label="Remove condition"
                         class="text-xs text-[#706f6c] dark:text-[#A1A09A] hover:text-red-500 shrink-0">×</button>
                 </div>
             @else
@@ -243,6 +245,7 @@ new class extends Component {
                             <span class="text-xs text-[#706f6c] dark:text-[#A1A09A] w-6 shrink-0">tag</span>
                             <select
                                 wire:model.live="conditions.{{ $idx }}.conditions.{{ $subIdx }}.operator"
+                                aria-label="Operator"
                                 class="text-xs border border-[#e3e3e0] dark:border-[#3E3E3A] rounded px-1 py-0.5 bg-[#FDFDFC] dark:bg-[#161615]">
                                 <option value="equals">equals</option>
                                 <option value="not_equals">does not equal</option>
@@ -250,9 +253,11 @@ new class extends Component {
                             <input type="text"
                                 wire:model.live="conditions.{{ $idx }}.conditions.{{ $subIdx }}.tag"
                                 list="tag-options" placeholder="tag name"
+                                aria-label="Tag name"
                                 class="text-xs border border-[#e3e3e0] dark:border-[#3E3E3A] rounded px-2 py-0.5 bg-[#FDFDFC] dark:bg-[#161615] flex-1 min-w-0">
                             <button type="button"
                                 wire:click="removeCondition({{ $subIdx }}, {{ $idx }})"
+                                aria-label="Remove condition"
                                 class="text-xs text-[#706f6c] dark:text-[#A1A09A] hover:text-red-500 shrink-0">×</button>
                         </div>
                     @endforeach

@@ -29,8 +29,12 @@
 </head>
 
 <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-white flex h-screen">
-    <aside class="border-r border-[#e5e5e5] dark:border-[#2a2a28] p-3 gap-1 flex flex-col w-64 h-full">
-        <div class="flex-1 overflow-y-auto flex flex-col gap-1">
+    <a href="#main-content"
+        class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:px-3 focus:py-1 focus:bg-[#1b1b18] focus:text-white focus:rounded focus:text-sm">
+        Skip to content
+    </a>
+    <aside aria-label="Main navigation" class="border-r border-[#e5e5e5] dark:border-[#2a2a28] p-3 gap-1 flex flex-col w-64 h-full">
+        <nav class="flex-1 overflow-y-auto flex flex-col gap-1">
             <div style="margin-bottom:16px;">
                 <x-sidebar-link href="{{ route('all.index') }}" :active="request()->routeIs('all')">All</x-sidebar-link>
             </div>
@@ -52,7 +56,7 @@
             @if (\App\Models\Item::query()->where('is_trashed', true)->count() > 0)
                 <x-sidebar-link href="{{ route('trash.index') }}" :active="request()->routeIs('trash')">Trash</x-sidebar-link>
             @endif
-        </div>
+        </nav>
 
         <hr class="border-gray-300 dark:border-gray-600" />
 
@@ -63,7 +67,7 @@
         </div>
     </aside>
     <div class="flex flex-col flex-1 overflow-hidden">
-        <main class="overflow-y-auto p-4 w-full flex-1">
+        <main id="main-content" class="overflow-y-auto p-4 w-full flex-1">
             {{ $slot }}
         </main>
     </div>

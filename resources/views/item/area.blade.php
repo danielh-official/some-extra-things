@@ -35,7 +35,7 @@
         </div>
 
         <div x-show="open" x-cloak>
-            <input x-ref="search" x-model="search" type="text" placeholder="Filter items…"
+            <input x-ref="search" x-model="search" type="text" placeholder="Filter items…" aria-label="Filter items"
                 class="w-full border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm px-2 py-1 text-xs bg-[#FDFDFC] dark:bg-[#161615] outline-none focus:border-[#a0a09c] dark:focus:border-[#60605c] mb-2">
         </div>
 
