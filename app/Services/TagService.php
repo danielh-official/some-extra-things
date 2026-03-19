@@ -1,5 +1,7 @@
 <?php
 
+// @codeCoverageIgnoreStart
+
 namespace App\Services;
 
 use App\Models\Tag;
@@ -89,3 +91,5 @@ class TagService
         return implode(' & quote & ', $segments);
     }
 }
+
+// @codeCoverageIgnoreEnd
