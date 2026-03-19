@@ -1,5 +1,7 @@
 <?php
 
+// @codeCoverageIgnoreStart
+
 namespace App\Providers;
 
 use Native\Desktop\Contracts\ProvidesPhpIni;
@@ -25,3 +27,5 @@ class NativeAppServiceProvider implements ProvidesPhpIni
         ];
     }
 }
+
+// @codeCoverageIgnoreEnd
