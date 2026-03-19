@@ -5,6 +5,8 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\DeleteAllItems;
 use App\Http\Controllers\Logbook;
 use App\Http\Controllers\PermanentlyDeleteTrashedItems;
+use App\Http\Controllers\SaveThemeSetting;
+use App\Http\Controllers\Settings;
 use App\Http\Controllers\ShowItem;
 use App\Http\Controllers\ShowTag;
 use App\Http\Controllers\SmartListController;
@@ -26,11 +28,9 @@ Route::post('/tags/sync', SyncTags::class)->name('tags.sync');
 Route::get('/tags/{tag}/edit', [TagController::class, 'edit'])->name('tags.edit');
 Route::patch('/tags/{tag}', [TagController::class, 'update'])->name('tags.update');
 Route::get('/tags/{tag}', ShowTag::class)->name('tags.show');
+Route::get('/settings', Settings::class)->name('settings');
 
-Route::get('/settings', function () {
-    return view('settings');
-})->name('settings');
-
+Route::post('/settings/theme', SaveThemeSetting::class)->name('settings.theme.update');
 Route::delete('/settings/items', DeleteAllItems::class)->name('settings.items.destroy');
 Route::delete('/trash/items', PermanentlyDeleteTrashedItems::class)->name('trash.items.destroy');
 

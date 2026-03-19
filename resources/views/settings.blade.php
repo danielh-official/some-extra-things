@@ -28,6 +28,22 @@
         </div>
 
         <div class="mt-6 pt-6 border-t border-[#e3e3e0] dark:border-[#3E3E3A] flex items-center justify-between">
+            <p class="text-[#706f6c] dark:text-[#A1A09A]">Appearance</p>
+            <div class="flex items-center gap-1">
+                @foreach (['system' => 'System', 'light' => 'Light', 'dark' => 'Dark'] as $value => $label)
+                    <form method="POST" action="{{ route('settings.theme.update') }}">
+                        @csrf
+                        <input type="hidden" name="theme" value="{{ $value }}">
+                        <button type="submit"
+                            class="inline-block px-3 py-1 text-xs rounded-sm leading-normal transition-all cursor-pointer {{ $theme === $value ? 'bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A] border border-black dark:border-[#eeeeec]' : 'bg-transparent text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:bg-[#f5f5f2] dark:hover:bg-[#161615]' }}">
+                            {{ $label }}
+                        </button>
+                    </form>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="mt-6 pt-6 border-t border-[#e3e3e0] dark:border-[#3E3E3A] flex items-center justify-between">
             <div>
                 <p class="text-[#706f6c] dark:text-[#A1A09A]">Move all items to Trash.</p>
             </div>
