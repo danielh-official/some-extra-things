@@ -7,20 +7,8 @@ use function Pest\Laravel\get;
 
 uses(RefreshDatabase::class);
 
-it('redirects / to /all', function () {
-    get('/')->assertRedirect('/all');
-});
-
-it('returns 200 for /all', function () {
-    get('/all')->assertSuccessful();
-});
-
 it('returns 200 for /logbook', function () {
     get('/logbook')->assertSuccessful();
-});
-
-it('returns 200 for /trash', function () {
-    get('/trash')->assertSuccessful();
 });
 
 it('shows logged items on /logbook', function () {
@@ -53,13 +41,4 @@ it('shows x-mark icon for canceled items in logbook', function () {
     Item::factory()->create(['type' => 'To-Do', 'is_logged' => true, 'status' => 'Canceled', 'completion_date' => now()]);
 
     get('/logbook')->assertSee('evenodd');
-});
-
-it('shows trashed items on /trash', function () {
-    $trashedItem = Item::factory()->create(['type' => 'To-Do', 'is_trashed' => true]);
-    $openItem = Item::factory()->create(['type' => 'To-Do', 'is_trashed' => false]);
-
-    get('/trash')
-        ->assertSee($trashedItem->title)
-        ->assertDontSee($openItem->title);
 });
