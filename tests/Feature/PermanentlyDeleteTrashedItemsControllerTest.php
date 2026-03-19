@@ -27,5 +27,5 @@ test('does not delete non-trashed items', function () {
 
 test('redirects to trash after permanent deletion', function () {
     delete(route('trash.items.destroy'))
-        ->assertRedirect(route('trash'));
+        ->assertRedirect(route('trash.index'));
 });

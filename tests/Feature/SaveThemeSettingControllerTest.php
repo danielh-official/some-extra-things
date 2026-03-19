@@ -13,7 +13,7 @@ test('saves theme via Settings facade and redirects to settings', function () {
         ->once();
 
     post(route('settings.theme.update'), ['theme' => 'dark'])
-        ->assertRedirect(route('settings'));
+        ->assertRedirect(route('settings.index'));
 });
 
 test('falls back to session when Settings facade throws', function () {
@@ -21,7 +21,7 @@ test('falls back to session when Settings facade throws', function () {
         ->andThrow(new Exception('unavailable'));
 
     post(route('settings.theme.update'), ['theme' => 'light'])
-        ->assertRedirect(route('settings'));
+        ->assertRedirect(route('settings.index'));
 
     expect(session('theme'))->toBe('light');
 });
@@ -42,5 +42,5 @@ test('accepts system as a valid theme', function () {
         ->once();
 
     post(route('settings.theme.update'), ['theme' => 'system'])
-        ->assertRedirect(route('settings'));
+        ->assertRedirect(route('settings.index'));
 });

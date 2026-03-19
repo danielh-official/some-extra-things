@@ -12,7 +12,7 @@ test('renders tags view sorted by name by default', function () {
     Tag::factory()->create(['name' => 'Zebra']);
     Tag::factory()->create(['name' => 'Alpha']);
 
-    $response = get(route('tags'));
+    $response = get(route('tags.index'));
 
     $response->assertSuccessful();
     $tags = $response->viewData('tags');
@@ -31,7 +31,7 @@ test('sorts by count descending when sort=count_desc', function () {
     Item::factory()->create(['type' => 'To-Do', 'status' => 'Open', 'is_trashed' => false])
         ->tags()->attach($rare->id);
 
-    $response = get(route('tags', ['sort' => 'count_desc']));
+    $response = get(route('tags.index', ['sort' => 'count_desc']));
 
     $response->assertSuccessful();
     $tags = $response->viewData('tags');
@@ -41,9 +41,9 @@ test('sorts by count descending when sort=count_desc', function () {
 });
 
 test('persists sort preference in session', function () {
-    get(route('tags', ['sort' => 'count_desc']));
+    get(route('tags.index', ['sort' => 'count_desc']));
 
-    get(route('tags'));
+    get(route('tags.index'));
 
     expect(session('tags_sort'))->toBe('count_desc');
 });
@@ -62,7 +62,7 @@ test('only counts open non-trashed items in withCount', function () {
     Item::factory()->create(['type' => 'To-Do', 'status' => 'Completed', 'is_trashed' => false])
         ->tags()->attach($tag->id);
 
-    $response = get(route('tags'));
+    $response = get(route('tags.index'));
 
     $tags = $response->viewData('tags');
 
@@ -70,7 +70,7 @@ test('only counts open non-trashed items in withCount', function () {
 });
 
 test('passes current sort to the view', function () {
-    $response = get(route('tags', ['sort' => 'count_desc']));
+    $response = get(route('tags.index', ['sort' => 'count_desc']));
 
     expect($response->viewData('sort'))->toBe('count_desc');
 });

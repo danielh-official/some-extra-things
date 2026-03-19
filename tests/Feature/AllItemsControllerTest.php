@@ -13,7 +13,7 @@ test('renders all non-trashed todos and projects', function () {
     $project = Item::factory()->create(['type' => 'Project', 'is_trashed' => false]);
     $trashed = Item::factory()->create(['type' => 'To-Do', 'is_trashed' => true]);
 
-    $response = get(route('all'));
+    $response = get(route('all.index'));
 
     $response->assertSuccessful();
     $response->assertSee($todo->title);
@@ -22,7 +22,7 @@ test('renders all non-trashed todos and projects', function () {
 });
 
 test('groups items by bucket and passes grouped and kanban to view', function () {
-    get(route('all'))
+    get(route('all.index'))
         ->assertSuccessful()
         ->assertViewHas('grouped')
         ->assertViewHas('kanban');
@@ -34,7 +34,7 @@ test('toggleKanban switches from vertical to horizontal', function () {
     session(['all_kanban' => 'vertical']);
 
     post(route('all.kanban'))
-        ->assertRedirect(route('all'));
+        ->assertRedirect(route('all.index'));
 
     expect(session('all_kanban'))->toBe('horizontal');
 });
@@ -43,7 +43,7 @@ test('toggleKanban switches from horizontal to vertical', function () {
     session(['all_kanban' => 'horizontal']);
 
     post(route('all.kanban'))
-        ->assertRedirect(route('all'));
+        ->assertRedirect(route('all.index'));
 
     expect(session('all_kanban'))->toBe('vertical');
 });

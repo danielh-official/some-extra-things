@@ -8,39 +8,56 @@ use App\Http\Controllers\PermanentlyDeleteTrashedItems;
 use App\Http\Controllers\SaveThemeSetting;
 use App\Http\Controllers\Settings;
 use App\Http\Controllers\ShowItem;
-use App\Http\Controllers\ShowTag;
 use App\Http\Controllers\SmartListController;
 use App\Http\Controllers\SyncTags;
 use App\Http\Controllers\TagController;
-use App\Http\Controllers\Tags;
 use App\Http\Controllers\ToggleTagEdits;
 use App\Http\Controllers\Trash;
 use App\Http\Controllers\TrashItem;
 use Illuminate\Support\Facades\Route;
 
+// MARK: Redirects
 Route::redirect('/', '/all');
-Route::get('/all', AllItems::class)->name('all');
-Route::post('/all/kanban', [AllItems::class, 'toggleKanban'])->name('all.kanban');
+
+// MARK: All page routes
+Route::name('all.')->prefix('all')->group(function () {
+    Route::get('/', AllItems::class)->name('index');
+    Route::post('/kanban', [AllItems::class, 'toggleKanban'])->name('kanban');
+});
+
+// MARK: Smart list routes
+Route::resource('smart-lists', SmartListController::class);
+Route::name('smart-lists.')->prefix('smart-lists/{smart_list}')->group(function () {
+    Route::get('/duplicate', [SmartListController::class, 'duplicate'])->name('duplicate');
+    Route::patch('/kanban', [SmartListController::class, 'toggleKanban'])->name('kanban');
+    Route::patch('/pin', [SmartListController::class, 'togglePin'])->name('pin');
+});
+
+// MARK: Logbook route
 Route::get('/logbook', Logbook::class)->name('logbook');
-Route::get('/trash', Trash::class)->name('trash');
 
-Route::get('/tags', Tags::class)->name('tags');
+// MARK: Trash routes
+Route::name('trash.')->prefix('trash')->group(function () {
+    Route::get('/', Trash::class)->name('index');
+    Route::delete('/items', PermanentlyDeleteTrashedItems::class)->name('items.destroy');
+});
+
+// MARK: Tag routes
 Route::post('/tags/sync', SyncTags::class)->name('tags.sync');
-Route::get('/tags/{tag}/edit', [TagController::class, 'edit'])->name('tags.edit');
-Route::patch('/tags/{tag}', [TagController::class, 'update'])->name('tags.update');
-Route::get('/tags/{tag}', ShowTag::class)->name('tags.show');
-Route::get('/settings', Settings::class)->name('settings');
+Route::resource('tags', TagController::class)->only('index', 'show', 'edit', 'update');
 
-Route::post('/settings/theme', SaveThemeSetting::class)->name('settings.theme.update');
-Route::post('/settings/tag-edits', ToggleTagEdits::class)->name('settings.tag-edits.toggle');
-Route::delete('/settings/items', DeleteAllItems::class)->name('settings.items.destroy');
-Route::delete('/trash/items', PermanentlyDeleteTrashedItems::class)->name('trash.items.destroy');
+// MARK: Settings routes
+Route::name('settings.')->prefix('settings')->group(function () {
+    Route::get('/', Settings::class)->name('index');
+    Route::post('/theme', SaveThemeSetting::class)->name('theme.update');
+    Route::post('/tag-edits', ToggleTagEdits::class)->name('tag-edits.toggle');
+    Route::delete('/items', DeleteAllItems::class)->name('items.destroy');
+});
 
+// MARK: Item detail routes
 Route::get('/areas/{area}', [AreaController::class, 'show'])->name('areas.show');
 Route::get('/projects/{item}', ShowItem::class)->name('projects.show');
 Route::get('/todos/{item}', ShowItem::class)->name('todos.show');
+
+// MARK: Item soft delete route
 Route::delete('/items/{item}/trash', TrashItem::class)->name('items.trash');
-Route::get('/smart-lists/{smart_list}/duplicate', [SmartListController::class, 'duplicate'])->name('smart-lists.duplicate');
-Route::post('/smart-lists/{smart_list}/kanban', [SmartListController::class, 'toggleKanban'])->name('smart-lists.kanban');
-Route::post('/smart-lists/{smart_list}/pin', [SmartListController::class, 'togglePin'])->name('smart-lists.pin');
-Route::resource('smart-lists', SmartListController::class);

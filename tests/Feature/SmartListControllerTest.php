@@ -9,6 +9,7 @@ use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Laravel\delete;
 use function Pest\Laravel\get;
+use function Pest\Laravel\patch;
 use function Pest\Laravel\post;
 use function Pest\Laravel\put;
 
@@ -318,7 +319,7 @@ test('duplicate passes cancelLink pointing back to the source smart list', funct
 test('togglePin sets is_pinned_to_sidebar to true when currently false', function () {
     $smartList = SmartList::factory()->create(['is_pinned_to_sidebar' => false]);
 
-    post(route('smart-lists.pin', $smartList))
+    patch(route('smart-lists.pin', $smartList))
         ->assertRedirect(route('smart-lists.show', $smartList));
 
     assertDatabaseHas('smart_lists', [
@@ -330,7 +331,7 @@ test('togglePin sets is_pinned_to_sidebar to true when currently false', functio
 test('togglePin sets is_pinned_to_sidebar to false when currently true', function () {
     $smartList = SmartList::factory()->create(['is_pinned_to_sidebar' => true]);
 
-    post(route('smart-lists.pin', $smartList));
+    patch(route('smart-lists.pin', $smartList));
 
     assertDatabaseHas('smart_lists', [
         'id' => $smartList->id,
@@ -343,7 +344,7 @@ test('togglePin sets is_pinned_to_sidebar to false when currently true', functio
 test('toggleKanban switches from vertical to horizontal', function () {
     $smartList = SmartList::factory()->create(['kanban_view' => 'vertical']);
 
-    post(route('smart-lists.kanban', $smartList))
+    patch(route('smart-lists.kanban', $smartList))
         ->assertRedirect(route('smart-lists.show', $smartList));
 
     assertDatabaseHas('smart_lists', [
@@ -355,7 +356,7 @@ test('toggleKanban switches from vertical to horizontal', function () {
 test('toggleKanban switches from horizontal to vertical', function () {
     $smartList = SmartList::factory()->create(['kanban_view' => 'horizontal']);
 
-    post(route('smart-lists.kanban', $smartList));
+    patch(route('smart-lists.kanban', $smartList));
 
     assertDatabaseHas('smart_lists', [
         'id' => $smartList->id,

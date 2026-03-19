@@ -22,6 +22,6 @@ class SaveThemeSetting extends Controller
             session()->put('theme', $request->theme);
         }
 
-        return redirect()->route('settings');
+        return redirect()->route('settings.index');
     }
 }

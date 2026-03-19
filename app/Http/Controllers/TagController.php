@@ -3,16 +3,67 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateTagRequest;
+use App\Models\Item;
 use App\Models\Tag;
 use App\Services\TagService;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Native\Desktop\Facades\Settings;
 
 class TagController extends Controller
 {
     public function __construct(protected TagService $tagService) {}
+
+    public function index(Request $request)
+    {
+        $sort = $request->input('sort', $request->session()->get('tags_sort', 'name'));
+
+        $request->session()->put('tags_sort', $sort);
+
+        $tags = Tag::withCount(['items' => fn ($q) => $q->where('status', 'Open')->where('is_trashed', false)])
+            ->when($sort === 'count_desc', fn ($q) => $q->orderByDesc('items_count')->orderBy('name'))
+            ->when($sort !== 'count_desc', fn ($q) => $q->orderBy('name'))
+            ->get();
+
+        return view('tags', compact('tags', 'sort'));
+    }
+
+    public function show(Request $request, string $tag): View
+    {
+        $tagModel = Tag::where('id', $tag)->orWhere('things_id', $tag)->firstOrFail();
+
+        $invert = $request->boolean('invert');
+
+        $tagScope = $invert
+            ? 'whereDoesntHave'
+            : 'whereHas';
+
+        $all = Item::notTrashed()
+            ->where('status', 'Open')
+            ->$tagScope('tags', fn ($q) => $q->where('tags.id', $tagModel->id))
+            ->orderBy('type')
+            ->orderBy('creation_date')
+            ->get();
+
+        $items = $all->filter(fn (Item $item) => $item->start !== 'Someday' && ! ($item->start_date && $item->start_date->gt(today()))
+        )->groupBy('type');
+
+        $upcomingItems = $all->filter(fn (Item $item) => $item->start !== 'Someday' && $item->start_date && $item->start_date->gt(today())
+        )->groupBy('type');
+
+        $somedayItems = $all->filter(fn (Item $item) => $item->start === 'Someday'
+        )->groupBy('type');
+
+        try {
+            $allowTagEdits = Settings::get('allow_tag_edits', false);
+        } catch (Exception) {
+            $allowTagEdits = session('allow_tag_edits', false);
+        }
+
+        return view('tags.show', compact('tagModel', 'items', 'upcomingItems', 'somedayItems', 'allowTagEdits', 'invert'));
+    }
 
     public function edit(string $tag): View
     {

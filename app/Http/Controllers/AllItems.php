@@ -38,7 +38,7 @@ class AllItems extends Controller
         $current = session('all_kanban', 'vertical');
         session(['all_kanban' => $current === 'horizontal' ? 'vertical' : 'horizontal']);
 
-        return redirect()->route('all');
+        return redirect()->route('all.index');
     }
 
     /**

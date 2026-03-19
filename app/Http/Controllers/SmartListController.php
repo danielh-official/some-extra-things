@@ -92,7 +92,7 @@ class SmartListController extends Controller
     /**
      * Classify an item into a display bucket.
      */
-    protected function bucket(Item $item): string
+    private function bucket(Item $item): string
     {
         if ($item->completion_date != null) {
             return 'Logbook';

@@ -14,7 +14,7 @@ test('toggles allow_tag_edits from false to true', function () {
         ->once();
 
     post(route('settings.tag-edits.toggle'))
-        ->assertRedirect(route('settings'));
+        ->assertRedirect(route('settings.index'));
 });
 
 test('toggles allow_tag_edits from true to false', function () {
@@ -27,7 +27,7 @@ test('toggles allow_tag_edits from true to false', function () {
         ->once();
 
     post(route('settings.tag-edits.toggle'))
-        ->assertRedirect(route('settings'));
+        ->assertRedirect(route('settings.index'));
 });
 
 test('falls back to session when settings throws', function () {
@@ -38,7 +38,7 @@ test('falls back to session when settings throws', function () {
     session()->put('allow_tag_edits', false);
 
     post(route('settings.tag-edits.toggle'))
-        ->assertRedirect(route('settings'));
+        ->assertRedirect(route('settings.index'));
 
     expect(session('allow_tag_edits'))->toBeTrue();
 });

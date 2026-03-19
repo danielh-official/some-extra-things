@@ -14,6 +14,6 @@ class PermanentlyDeleteTrashedItems extends Controller
     {
         Item::where('is_trashed', true)->delete();
 
-        return redirect()->route('trash');
+        return redirect()->route('trash.index');
     }
 }

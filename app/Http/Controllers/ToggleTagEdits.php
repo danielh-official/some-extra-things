@@ -22,6 +22,6 @@ class ToggleTagEdits extends Controller
             session()->put('allow_tag_edits', ! $current);
         }
 
-        return redirect()->route('settings');
+        return redirect()->route('settings.index');
     }
 }

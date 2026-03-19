@@ -16,7 +16,7 @@ test('renders settings view with theme and allowTagEdits from Settings facade', 
         ->with('allow_tag_edits', false)
         ->andReturn(true);
 
-    $response = get(route('settings'));
+    $response = get(route('settings.index'));
 
     $response->assertSuccessful();
     expect($response->viewData('theme'))->toBe('dark');
@@ -30,7 +30,7 @@ test('falls back to session when Settings facade throws', function () {
     session()->put('theme', 'light');
     session()->put('allow_tag_edits', true);
 
-    $response = get(route('settings'));
+    $response = get(route('settings.index'));
 
     $response->assertSuccessful();
     expect($response->viewData('theme'))->toBe('light');
@@ -41,7 +41,7 @@ test('falls back to defaults when session is empty and Settings facade throws', 
     Settings::shouldReceive('get')
         ->andThrow(new Exception('unavailable'));
 
-    $response = get(route('settings'));
+    $response = get(route('settings.index'));
 
     $response->assertSuccessful();
     expect($response->viewData('theme'))->toBe('system');

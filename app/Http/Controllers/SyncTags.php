@@ -13,7 +13,7 @@ class SyncTags extends Controller
         $result = $tagService->import();
 
         if (! $result) {
-            return redirect()->route('tags')->with('error', 'Failed to fetch tags from Things 3.');
+            return redirect()->route('tags.index')->with('error', 'Failed to fetch tags from Things 3.');
         }
 
         $entries = array_filter(explode('~~~', trim($result)));
@@ -63,6 +63,6 @@ class SyncTags extends Controller
             }
         }
 
-        return redirect()->route('tags')->with('status', 'Tags synced from Things 3.');
+        return redirect()->route('tags.index')->with('status', 'Tags synced from Things 3.');
     }
 }

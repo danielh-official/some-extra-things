@@ -27,7 +27,7 @@
             }
         }">
         <div>
-            <a href="{{ route('tags') }}" class="text-xs text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-white">&larr; All Tags</a>
+            <a href="{{ route('tags.index') }}" class="text-xs text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-white">&larr; All Tags</a>
         </div>
 
         <div class="flex items-center justify-between">

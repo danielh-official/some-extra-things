@@ -32,7 +32,7 @@
     <aside class="border-r border-[#e5e5e5] dark:border-[#2a2a28] p-3 gap-1 flex flex-col w-64 h-full">
         <div class="flex-1 overflow-y-auto flex flex-col gap-1">
             <div style="margin-bottom:16px;">
-                <x-sidebar-link href="{{ route('all') }}" :active="request()->routeIs('all')">All</x-sidebar-link>
+                <x-sidebar-link href="{{ route('all.index') }}" :active="request()->routeIs('all')">All</x-sidebar-link>
             </div>
 
             {{-- Smart Lists --}}
@@ -50,7 +50,7 @@
 
             <x-sidebar-link href="{{ route('logbook') }}" :active="request()->routeIs('logbook')">Logbook</x-sidebar-link>
             @if (\App\Models\Item::query()->where('is_trashed', true)->count() > 0)
-                <x-sidebar-link href="{{ route('trash') }}" :active="request()->routeIs('trash')">Trash</x-sidebar-link>
+                <x-sidebar-link href="{{ route('trash.index') }}" :active="request()->routeIs('trash')">Trash</x-sidebar-link>
             @endif
         </div>
 
@@ -58,8 +58,8 @@
 
         {{-- Settings & Tags --}}
         <div style="margin-top:16px;">
-            <x-sidebar-link href="{{ route('tags') }}" :active="request()->routeIs('tags*')">Tags</x-sidebar-link>
-            <x-sidebar-link href="{{ route('settings') }}" :active="request()->routeIs('settings')">Settings</x-sidebar-link>
+            <x-sidebar-link href="{{ route('tags.index') }}" :active="request()->routeIs('tags*')">Tags</x-sidebar-link>
+            <x-sidebar-link href="{{ route('settings.index') }}" :active="request()->routeIs('settings')">Settings</x-sidebar-link>
         </div>
     </aside>
     <div class="flex flex-col flex-1 overflow-hidden">

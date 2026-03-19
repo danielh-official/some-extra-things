@@ -14,6 +14,6 @@ class DeleteAllItems extends Controller
     {
         Item::query()->update(['is_trashed' => true]);
 
-        return redirect()->route('settings');
+        return redirect()->route('settings.index');
     }
 }

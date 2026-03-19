@@ -20,5 +20,5 @@ test('marks all items as trashed', function () {
 
 test('redirects to settings after deleting all items', function () {
     delete(route('settings.items.destroy'))
-        ->assertRedirect(route('settings'));
+        ->assertRedirect(route('settings.index'));
 });
