@@ -6,7 +6,7 @@
 
         <div class="flex flex-col gap-1">
             <div class="flex items-center gap-2">
-                <h1 class="{{ $item->type === 'Project' ? 'text-base font-bold' : 'text-sm font-semibold' }}">
+                <h1 class="text-sm font-semibold">
                     {{ $item->title }}
                 </h1>
                 <span class="text-xs text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-full px-2 py-0.5">{{ $item->type }}</span>
@@ -119,27 +119,6 @@
                 </div>
             @endif
         </div>
-
-        @if (isset($childTodos) && $childTodos && $childTodos->isNotEmpty())
-            <div class="flex flex-col gap-3 pt-4 border-t border-[#e5e5e5] dark:border-[#2a2a28]">
-                <span class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A]">To-Dos</span>
-                @foreach ($childTodos as $headingName => $todos)
-                    @if ($headingName !== '')
-                        @php $firstTodo = $todos->first(); @endphp
-                        <p class="text-xs font-semibold text-[#706f6c] dark:text-[#A1A09A]">
-                            @if ($firstTodo->heading_id)
-                                <a href="things:///show?id={{ $firstTodo->heading_id }}">{{ $headingName }}</a>
-                            @else
-                                {{ $headingName }}
-                            @endif
-                        </p>
-                    @endif
-                    @foreach ($todos as $todo)
-                        <x-item-row :item="$todo" :show-parent="false" />
-                    @endforeach
-                @endforeach
-            </div>
-        @endif
 
         <div class="pt-4 border-t border-[#e5e5e5] dark:border-[#2a2a28] flex items-center gap-2">
             <a href="things:///show?id={{ $item->id }}"

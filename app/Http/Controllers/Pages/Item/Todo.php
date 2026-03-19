@@ -27,6 +27,6 @@ class Todo extends Controller
 
         $parentItem = $item->parent_id ? Item::find($item->parent_id) : null;
 
-        return view('items.show', compact('item', 'notesHtml', 'parentItem'));
+        return view('item.todo', compact('item', 'notesHtml', 'parentItem'));
     }
 }

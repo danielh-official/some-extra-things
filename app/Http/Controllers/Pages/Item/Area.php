@@ -28,6 +28,6 @@ class Area extends Controller
         $upcomingItems = $all->filter($isUpcoming);
         $somedayItems = $all->filter($isSomeday);
 
-        return view('areas.show', compact('area', 'items', 'upcomingItems', 'somedayItems'));
+        return view('item.area', compact('area', 'items', 'upcomingItems', 'somedayItems'));
     }
 }

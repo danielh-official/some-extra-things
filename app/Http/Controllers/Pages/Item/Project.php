@@ -48,6 +48,6 @@ class Project extends Controller
                 ->groupBy(fn (Item $child) => $child->heading ?? '');
         }
 
-        return view('items.show', compact('item', 'notesHtml', 'childTodos', 'parentItem'));
+        return view('item.project', compact('item', 'notesHtml', 'childTodos', 'parentItem'));
     }
 }
