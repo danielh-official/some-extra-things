@@ -7,7 +7,7 @@ uses(RefreshDatabase::class);
 
 test('scopeTopLevel excludes Headings', function () {
     Item::factory()->create(['type' => 'Heading']);
-    $project = Item::factory()->create(['type' => 'Project']);
+    Item::factory()->create(['type' => 'Project']);
 
     $results = Item::topLevel()->get();
 
@@ -17,7 +17,7 @@ test('scopeTopLevel excludes Headings', function () {
 
 test('scopeTopLevel excludes Areas', function () {
     Item::factory()->create(['type' => 'Area']);
-    $project = Item::factory()->create(['type' => 'Project']);
+    Item::factory()->create(['type' => 'Project']);
 
     $results = Item::topLevel()->get();
 
