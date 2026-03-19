@@ -16,6 +16,7 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\Tags;
 use App\Http\Controllers\Today;
 use App\Http\Controllers\Trash;
+use App\Http\Controllers\TrashItem;
 use App\Http\Controllers\Upcoming;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +45,7 @@ Route::delete('/trash/items', PermanentlyDeleteTrashedItems::class)->name('trash
 
 Route::get('/projects/{item}', ShowItem::class)->name('projects.show');
 Route::get('/todos/{item}', ShowItem::class)->name('todos.show');
+Route::delete('/items/{item}/trash', TrashItem::class)->name('items.trash');
 Route::get('/areas/{area}', [AreaController::class, 'show'])->name('areas.show');
 Route::get('/smart-lists/{smart_list}/duplicate', [SmartListController::class, 'duplicate'])->name('smart-lists.duplicate');
 Route::post('/smart-lists/{smart_list}/kanban', [SmartListController::class, 'toggleKanban'])->name('smart-lists.kanban');
