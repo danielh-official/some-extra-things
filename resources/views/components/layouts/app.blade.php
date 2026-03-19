@@ -24,9 +24,17 @@
             </div>
 
             {{-- Smart Lists --}}
-            <div style="margin-bottom:16px;">
+            <div>
                 <x-sidebar-link href="{{ route('smart-lists.index') }}" :active="request()->routeIs('smart-lists.*')">Smart Lists</x-sidebar-link>
             </div>
+            @foreach ($sidebarPinnedSmartLists as $pinnedList)
+                <div style="padding-left:8px;{{ $loop->first ? 'margin-top:4px;' : '' }}{{ $loop->last ? 'margin-bottom:16px;' : '' }}">
+                    <x-sidebar-link href="{{ route('smart-lists.show', $pinnedList) }}" :active="request()->routeIs('smart-lists.show') && request()->route('smart_list')?->is($pinnedList)">{{ $pinnedList->name }}</x-sidebar-link>
+                </div>
+            @endforeach
+            @if ($sidebarPinnedSmartLists->isEmpty())
+                <div style="margin-bottom:16px;"></div>
+            @endif
 
             <x-sidebar-link href="{{ route('logbook') }}" :active="request()->routeIs('logbook')">Logbook</x-sidebar-link>
             @if (\App\Models\Item::query()->where('is_trashed', true)->count() > 0)

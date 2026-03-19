@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
     {
         View::composer('components.layouts.app', function ($view) {
             $view->with([
-                'sidebarSmartLists' => SmartList::orderBy('name')->get(),
+                'sidebarPinnedSmartLists' => SmartList::where('is_pinned_to_sidebar', true)->orderBy('name')->get(),
             ]);
         });
     }

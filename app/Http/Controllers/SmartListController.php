@@ -112,6 +112,18 @@ class SmartListController extends Controller
     }
 
     /**
+     * Toggle whether this smart list is pinned to the sidebar.
+     */
+    public function togglePin(SmartList $smartList): RedirectResponse
+    {
+        $smartList->update([
+            'is_pinned_to_sidebar' => ! $smartList->is_pinned_to_sidebar,
+        ]);
+
+        return redirect()->route('smart-lists.show', $smartList);
+    }
+
+    /**
      * Toggle between vertical and horizontal kanban view.
      */
     public function toggleKanban(SmartList $smartList): RedirectResponse

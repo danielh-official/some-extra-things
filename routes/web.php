@@ -40,4 +40,5 @@ Route::get('/todos/{item}', ShowItem::class)->name('todos.show');
 Route::delete('/items/{item}/trash', TrashItem::class)->name('items.trash');
 Route::get('/smart-lists/{smart_list}/duplicate', [SmartListController::class, 'duplicate'])->name('smart-lists.duplicate');
 Route::post('/smart-lists/{smart_list}/kanban', [SmartListController::class, 'toggleKanban'])->name('smart-lists.kanban');
+Route::post('/smart-lists/{smart_list}/pin', [SmartListController::class, 'togglePin'])->name('smart-lists.pin');
 Route::resource('smart-lists', SmartListController::class);

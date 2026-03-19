@@ -19,6 +19,7 @@ class SmartList extends Model
         'name',
         'criteria',
         'kanban_view',
+        'is_pinned_to_sidebar',
     ];
 
     /**
@@ -28,6 +29,7 @@ class SmartList extends Model
     {
         return [
             'criteria' => 'array',
+            'is_pinned_to_sidebar' => 'bool',
         ];
     }
 
