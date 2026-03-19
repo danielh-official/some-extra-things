@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Actions\DeleteAllItems;
+use App\Http\Controllers\Actions\GenerateApiToken;
 use App\Http\Controllers\Actions\PermanentlyDeleteTrashedItems;
 use App\Http\Controllers\Actions\SaveThemeSetting;
 use App\Http\Controllers\Actions\SyncTags;
@@ -52,6 +53,7 @@ Route::name('settings.')->prefix('settings')->group(function () {
     Route::get('/', Settings::class)->name('index');
     Route::post('/theme', SaveThemeSetting::class)->name('theme.update');
     Route::post('/tag-edits', ToggleTagEdits::class)->name('tag-edits.toggle');
+    Route::post('/api-token', GenerateApiToken::class)->name('api-token.generate');
     Route::delete('/items', DeleteAllItems::class)->name('items.destroy');
 });
 

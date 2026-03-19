@@ -1,12 +1,17 @@
 <?php
 
+use App\Http\Middleware\EnsureApiToken;
+use App\Http\Middleware\EnsureLocalhost;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\postJson;
+use function Pest\Laravel\withoutMiddleware;
 
 uses(RefreshDatabase::class);
+
+beforeEach(fn () => withoutMiddleware([EnsureLocalhost::class, EnsureApiToken::class]));
 
 describe('tags', function () {
     test('string is split on newlines into array', function () {

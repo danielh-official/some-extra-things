@@ -63,6 +63,31 @@
             </form>
         </div>
 
+        <div class="mt-6 pt-6 border-t border-[#e3e3e0] dark:border-[#3E3E3A] flex items-center justify-between"
+            x-data="{ copied: false }">
+            <div class="flex flex-col gap-1">
+                <p class="text-[#706f6c] dark:text-[#A1A09A]">API Token</p>
+                @if ($apiToken)
+                    <div class="flex items-center gap-2">
+                        <code
+                            class="px-1.5 py-0.5 rounded-sm bg-[#fff2f2] dark:bg-[#1D0002] border border-[#e3e3e0] dark:border-[#3E3E3A] text-xs font-mono truncate max-w-[200px]">{{ $apiToken }}</code>
+                        <button type="button"
+                            @click="navigator.clipboard.writeText('{{ $apiToken }}'); copied = true; setTimeout(() => copied = false, 2000)"
+                            class="inline-block px-3 py-1 text-xs rounded-sm leading-normal transition-all cursor-pointer bg-transparent text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:bg-[#f5f5f2] dark:hover:bg-[#161615]"
+                            x-text="copied ? 'Copied!' : 'Copy'">
+                        </button>
+                    </div>
+                @endif
+            </div>
+            <form method="POST" action="{{ route('settings.api-token.generate') }}">
+                @csrf
+                <button type="submit"
+                    class="inline-block px-3 py-1 text-xs rounded-sm leading-normal transition-all cursor-pointer bg-transparent text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:bg-[#f5f5f2] dark:hover:bg-[#161615]">
+                    {{ $apiToken ? 'Regenerate' : 'Generate' }}
+                </button>
+            </form>
+        </div>
+
         <div class="mt-6 pt-6 border-t border-[#e3e3e0] dark:border-[#3E3E3A] flex items-center justify-between">
             <div>
                 <p class="text-[#706f6c] dark:text-[#A1A09A]">Move all items to Trash.</p>

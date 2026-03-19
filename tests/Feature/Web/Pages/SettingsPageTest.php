@@ -16,6 +16,10 @@ test('renders settings view with theme and allowTagEdits from Settings facade', 
         ->with('allow_tag_edits', false)
         ->andReturn(true);
 
+    Settings::shouldReceive('get')
+        ->with('api_token', null)
+        ->andReturn(null);
+
     $response = get(route('settings.index'));
 
     $response->assertSuccessful();

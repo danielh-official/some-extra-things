@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Middleware\EnsureApiToken;
+use App\Http\Middleware\EnsureLocalhost;
 use App\Models\Item;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 
 use function Pest\Laravel\assertDatabaseHas;
-use function Pest\Laravel\postJson;
+use function Pest\Laravel\withoutMiddleware;
 
 uses(RefreshDatabase::class);
 
@@ -17,7 +19,8 @@ test('it creates a thing via post', function () {
         'status' => 'Open',
     ];
 
-    $response = postJson(route('api.items.store'), $payload);
+    $response = withoutMiddleware([EnsureLocalhost::class, EnsureApiToken::class])
+        ->postJson(route('api.items.store'), $payload);
 
     $response->assertCreated();
     $response->assertJsonFragment([
@@ -45,7 +48,8 @@ test('post with existing id upserts a thing', function () {
         'status' => 'Open',
     ];
 
-    $response = postJson(route('api.items.store'), $payload);
+    $response = withoutMiddleware([EnsureLocalhost::class, EnsureApiToken::class])
+        ->postJson(route('api.items.store'), $payload);
 
     $response->assertOk();
     $response->assertJsonFragment([
@@ -66,7 +70,8 @@ test('validation fails for invalid type', function () {
         'title' => 'Test',
     ];
 
-    $response = postJson(route('api.items.store'), $payload);
+    $response = withoutMiddleware([EnsureLocalhost::class, EnsureApiToken::class])
+        ->postJson(route('api.items.store'), $payload);
 
     $response->assertUnprocessable();
     $response->assertJsonValidationErrors(['type']);
