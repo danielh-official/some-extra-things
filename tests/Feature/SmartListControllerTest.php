@@ -14,7 +14,7 @@ use function Pest\Laravel\put;
 
 uses(RefreshDatabase::class);
 
-test('index shows smart lists sorted by item count', function () {
+test('index sorts by total count descending by default', function () {
     $tagA = Tag::factory()->create();
     $tagB = Tag::factory()->create();
 
@@ -65,6 +65,37 @@ test('index shows smart lists sorted by item count', function () {
 
     expect($ordered[0]['model']->id)->toBe($listA->id);
     expect($ordered[1]['model']->id)->toBe($listB->id);
+});
+
+test('index sorts by today count descending when sort=today_desc', function () {
+    $tagA = Tag::factory()->create();
+    $tagB = Tag::factory()->create();
+
+    // listA has 1 today item, listB has 2 today items — listB should appear first
+    $todayA = Item::factory()->create(['status' => 'Open', 'is_inbox' => false, 'is_logged' => false, 'start_date' => today()]);
+    $todayB1 = Item::factory()->create(['status' => 'Open', 'is_inbox' => false, 'is_logged' => false, 'start_date' => today()]);
+    $todayB2 = Item::factory()->create(['status' => 'Open', 'is_inbox' => false, 'is_logged' => false, 'start_date' => today()]);
+
+    $todayA->tags()->attach($tagA->id);
+    $todayB1->tags()->attach($tagB->id);
+    $todayB2->tags()->attach($tagB->id);
+
+    $listA = SmartList::create(['name' => 'A', 'criteria' => ['type' => 'tag', 'tag' => $tagA->name, 'operator' => 'equals']]);
+    $listB = SmartList::create(['name' => 'B', 'criteria' => ['type' => 'tag', 'tag' => $tagB->name, 'operator' => 'equals']]);
+
+    $ordered = get(route('smart-lists.index', ['sort' => 'today_desc']))->viewData('lists');
+
+    expect($ordered[0]['model']->id)->toBe($listB->id);
+    expect($ordered[1]['model']->id)->toBe($listA->id);
+});
+
+test('index persists sort preference in session', function () {
+    get(route('smart-lists.index', ['sort' => 'today_desc']));
+
+    // Second request without query param should still use today_desc from session
+    $ordered = get(route('smart-lists.index'))->viewData('lists');
+
+    expect(session('smart_lists_sort'))->toBe('today_desc');
 });
 
 test('can create a smart list', function () {

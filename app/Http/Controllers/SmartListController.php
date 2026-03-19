@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateSmartListRequest;
 use App\Models\Item;
 use App\Models\SmartList;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class SmartListController extends Controller
@@ -14,8 +15,12 @@ class SmartListController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
+        $sort = $request->input('sort', $request->session()->get('smart_lists_sort', 'count_desc'));
+
+        $request->session()->put('smart_lists_sort', $sort);
+
         $lists = SmartList::all()
             ->map(function (SmartList $list) {
                 return [
@@ -25,11 +30,12 @@ class SmartListController extends Controller
                     'anytimeCount' => $list->anytimeCount(),
                 ];
             })
-            ->sortByDesc('count')
+            ->sortByDesc($sort === 'today_desc' ? 'todayCount' : 'count')
             ->values();
 
         return view('smart-lists.index', [
             'lists' => $lists,
+            'sort' => $sort,
         ]);
     }
 
