@@ -43,6 +43,26 @@
             </div>
         </div>
 
+        <div class="mt-6 pt-6 border-t border-[#e3e3e0] dark:border-[#3E3E3A] flex items-center justify-between"
+            x-data="{
+                confirmToggle(e) {
+                    if (!{{ $allowTagEdits ? 'true' : 'false' }}) {
+                        if (!window.confirm('Enabling tag edits allows renaming and reparenting tags directly in Things 3 via AppleScript. This will make changes to your Things 3 data. By confirming and continuing to use this feature, you accept any and all potential risks that may arise. Continue?')) {
+                            e.preventDefault();
+                        }
+                    }
+                }
+            }">
+            <p class="text-[#706f6c] dark:text-[#A1A09A]">Allow Tag Edits</p>
+            <form method="POST" action="{{ route('settings.tag-edits.toggle') }}" @submit="confirmToggle($event)">
+                @csrf
+                <button type="submit"
+                    class="inline-block px-3 py-1 text-xs rounded-sm leading-normal transition-all cursor-pointer {{ $allowTagEdits ? 'bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A] border border-black dark:border-[#eeeeec]' : 'bg-transparent text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:bg-[#f5f5f2] dark:hover:bg-[#161615]' }}">
+                    {{ $allowTagEdits ? 'Disable' : 'Enable' }}
+                </button>
+            </form>
+        </div>
+
         <div class="mt-6 pt-6 border-t border-[#e3e3e0] dark:border-[#3E3E3A] flex items-center justify-between">
             <div>
                 <p class="text-[#706f6c] dark:text-[#A1A09A]">Move all items to Trash.</p>

@@ -46,6 +46,8 @@ class SmartListController extends Controller
      */
     public function store(StoreSmartListRequest $request): RedirectResponse
     {
+        SmartList::create($request->validated());
+
         return redirect()
             ->route('smart-lists.index')
             ->with('status', 'Smart list created.');

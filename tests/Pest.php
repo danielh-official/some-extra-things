@@ -43,7 +43,9 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function callMethod(object $obj, string $method, array $args = []): mixed
 {
-    // ..
+    $ref = new ReflectionMethod($obj, $method);
+
+    return $ref->invoke($obj, ...$args);
 }

@@ -13,6 +13,7 @@ use App\Http\Controllers\SmartListController;
 use App\Http\Controllers\SyncTags;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\Tags;
+use App\Http\Controllers\ToggleTagEdits;
 use App\Http\Controllers\Trash;
 use App\Http\Controllers\TrashItem;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,7 @@ Route::get('/tags/{tag}', ShowTag::class)->name('tags.show');
 Route::get('/settings', Settings::class)->name('settings');
 
 Route::post('/settings/theme', SaveThemeSetting::class)->name('settings.theme.update');
+Route::post('/settings/tag-edits', ToggleTagEdits::class)->name('settings.tag-edits.toggle');
 Route::delete('/settings/items', DeleteAllItems::class)->name('settings.items.destroy');
 Route::delete('/trash/items', PermanentlyDeleteTrashedItems::class)->name('trash.items.destroy');
 

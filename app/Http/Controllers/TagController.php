@@ -4,13 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateTagRequest;
 use App\Models\Tag;
+use App\Services\TagService;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Native\Desktop\Facades\Settings;
 
 class TagController extends Controller
 {
+    public function __construct(protected TagService $tagService) {}
+
     public function edit(string $tag): View
     {
+        try {
+            $allowTagEdits = Settings::get('allow_tag_edits', false);
+        } catch (Exception) {
+            $allowTagEdits = session('allow_tag_edits', false);
+        }
+
+        abort_if(! $allowTagEdits, 404);
+
         $tagModel = Tag::where('id', $tag)->orWhere('things_id', $tag)->firstOrFail();
 
         $otherTags = Tag::where('id', '!=', $tagModel->id)->orderBy('name')->get();
@@ -20,6 +33,14 @@ class TagController extends Controller
 
     public function update(UpdateTagRequest $request, string $tag): RedirectResponse
     {
+        try {
+            $allowTagEdits = Settings::get('allow_tag_edits', false);
+        } catch (Exception) {
+            $allowTagEdits = session('allow_tag_edits', false);
+        }
+
+        abort_if(! $allowTagEdits, 404);
+
         $tagModel = Tag::where('id', $tag)->orWhere('things_id', $tag)->firstOrFail();
 
         $newName = $request->validated('name');
@@ -29,16 +50,12 @@ class TagController extends Controller
         $parentChanged = (string) $newParentId !== (string) ($tagModel->parent_tag_id ?? '');
 
         if ($nameChanged || $parentChanged) {
-            $script = $this->buildAppleScript($tagModel, $newName, $newParentId);
-
-            $output = [];
-            $returnCode = 0;
-            exec('osascript -e '.escapeshellarg($script).' 2>&1', $output, $returnCode);
-
-            if ($returnCode !== 0) {
+            try {
+                $this->tagService->update($tagModel, $newName, $newParentId);
+            } catch (Exception $e) {
                 return redirect()->back()
                     ->withInput()
-                    ->withErrors(['things' => 'Failed to update tag in Things 3: '.implode(' ', $output)]);
+                    ->withErrors(['things' => 'Failed to update tag in Things 3: '.$e->getMessage()]);
             }
         }
 
@@ -56,51 +73,5 @@ class TagController extends Controller
         return redirect()
             ->route('tags.show', $tagModel->things_id ?? $tagModel->id)
             ->with('status', 'Tag updated.');
-    }
-
-    protected function buildAppleScript(Tag $tagModel, string $newName, ?string $newParentId): string
-    {
-        $currentName = $this->asString($tagModel->name);
-        $escapedNew = $this->asString($newName);
-
-        $lines = ['tell application "Things3"'];
-
-        if ($newName !== $tagModel->name) {
-            $lines[] = "  set name of tag {$currentName} to {$escapedNew}";
-        }
-
-        // Name to reference in subsequent statements (after any rename)
-        $refName = $newName !== $tagModel->name ? $escapedNew : $currentName;
-
-        if ($newParentId) {
-            $parentTag = Tag::find($newParentId);
-            if ($parentTag) {
-                $escapedParent = $this->asString($parentTag->name);
-                $lines[] = "  set parent tag of tag {$refName} to tag {$escapedParent}";
-            }
-        } elseif ($tagModel->parent_tag_id) {
-            $lines[] = "  set parent tag of tag {$refName} to missing value";
-        }
-
-        $lines[] = 'end tell';
-
-        return implode("\n", $lines);
-    }
-
-    /**
-     * Encode a PHP string as a safe AppleScript string literal,
-     * handling embedded double-quotes via the AppleScript `quote` constant.
-     */
-    protected function asString(string $value): string
-    {
-        $parts = explode('"', $value);
-
-        if (count($parts) === 1) {
-            return '"'.$value.'"';
-        }
-
-        $segments = array_map(fn (string $p) => '"'.$p.'"', $parts);
-
-        return implode(' & quote & ', $segments);
     }
 }

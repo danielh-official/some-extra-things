@@ -5,6 +5,13 @@ use App\Models\SmartList;
 use App\Models\Tag;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\assertDatabaseMissing;
+use function Pest\Laravel\delete;
+use function Pest\Laravel\get;
+use function Pest\Laravel\post;
+use function Pest\Laravel\put;
+
 uses(RefreshDatabase::class);
 
 test('index shows smart lists sorted by item count', function () {
@@ -50,7 +57,7 @@ test('index shows smart lists sorted by item count', function () {
         ],
     ]);
 
-    $response = $this->get(route('smart-lists.index'));
+    $response = get(route('smart-lists.index'));
 
     $response->assertSuccessful();
 
@@ -70,11 +77,11 @@ test('can create a smart list', function () {
         ],
     ];
 
-    $response = $this->post(route('smart-lists.store'), $payload);
+    $response = post(route('smart-lists.store'), $payload);
 
     $response->assertRedirect(route('smart-lists.index'));
 
-    $this->assertDatabaseHas('smart_lists', [
+    assertDatabaseHas('smart_lists', [
         'name' => 'My Smart List',
     ]);
 });
@@ -89,11 +96,11 @@ test('can update a smart list', function () {
         'criteria' => null,
     ];
 
-    $response = $this->put(route('smart-lists.update', $smartList), $payload);
+    $response = put(route('smart-lists.update', $smartList), $payload);
 
     $response->assertRedirect(route('smart-lists.show', $smartList));
 
-    $this->assertDatabaseHas('smart_lists', [
+    assertDatabaseHas('smart_lists', [
         'id' => $smartList->id,
         'name' => 'Renamed',
     ]);
@@ -102,11 +109,11 @@ test('can update a smart list', function () {
 test('can delete a smart list', function () {
     $smartList = SmartList::factory()->create();
 
-    $response = $this->delete(route('smart-lists.destroy', $smartList));
+    $response = delete(route('smart-lists.destroy', $smartList));
 
     $response->assertRedirect(route('smart-lists.index'));
 
-    $this->assertDatabaseMissing('smart_lists', [
+    assertDatabaseMissing('smart_lists', [
         'id' => $smartList->id,
     ]);
 });

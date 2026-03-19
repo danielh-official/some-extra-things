@@ -4,6 +4,9 @@ use App\Models\Item;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 
+use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\postJson;
+
 uses(RefreshDatabase::class);
 
 test('it creates a thing via post', function () {
@@ -14,7 +17,7 @@ test('it creates a thing via post', function () {
         'status' => 'Open',
     ];
 
-    $response = $this->postJson(route('api.items.store'), $payload);
+    $response = postJson(route('api.items.store'), $payload);
 
     $response->assertCreated();
     $response->assertJsonFragment([
@@ -23,7 +26,7 @@ test('it creates a thing via post', function () {
         'status' => 'Open',
     ]);
 
-    $this->assertDatabaseHas('items', [
+    assertDatabaseHas('items', [
         'title' => 'Test Thing',
         'type' => 'To-Do',
     ]);
@@ -42,7 +45,7 @@ test('post with existing id upserts a thing', function () {
         'status' => 'Open',
     ];
 
-    $response = $this->postJson(route('api.items.store'), $payload);
+    $response = postJson(route('api.items.store'), $payload);
 
     $response->assertOk();
     $response->assertJsonFragment([
@@ -50,7 +53,7 @@ test('post with existing id upserts a thing', function () {
         'title' => 'Updated',
     ]);
 
-    $this->assertDatabaseHas('items', [
+    assertDatabaseHas('items', [
         'id' => $item->id,
         'title' => 'Updated',
     ]);
@@ -63,7 +66,7 @@ test('validation fails for invalid type', function () {
         'title' => 'Test',
     ];
 
-    $response = $this->postJson(route('api.items.store'), $payload);
+    $response = postJson(route('api.items.store'), $payload);
 
     $response->assertUnprocessable();
     $response->assertJsonValidationErrors(['type']);

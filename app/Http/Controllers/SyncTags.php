@@ -3,34 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tag;
+use App\Services\TagService;
 use Illuminate\Http\RedirectResponse;
 
 class SyncTags extends Controller
 {
-    public function __invoke(): RedirectResponse
+    public function __invoke(TagService $tagService): RedirectResponse
     {
-        $script = <<<'APPLESCRIPT'
-        tell application "Things3"
-            set tagList to tags
-            set output to ""
-            repeat with t in tagList
-                set tid to id of t
-                set tname to name of t
-                set tshortcut to ""
-                try
-                    set tshortcut to keyboard shortcut of t
-                end try
-                set tparent to ""
-                try
-                    set tparent to id of parent tag of t
-                end try
-                set output to output & tid & "|||" & tname & "|||" & tshortcut & "|||" & tparent & "~~~"
-            end repeat
-            return output
-        end tell
-        APPLESCRIPT;
-
-        $result = shell_exec('osascript -e '.escapeshellarg($script));
+        $result = $tagService->import();
 
         if (! $result) {
             return redirect()->route('tags')->with('error', 'Failed to fetch tags from Things 3.');
