@@ -1,38 +1,35 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Pages\Item;
 
+use App\Http\Controllers\Controller;
 use App\Models\Item;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use League\CommonMark\CommonMarkConverter;
 
-class ShowItem extends Controller
+class Project extends Controller
 {
     /**
      * Handle the incoming request.
      */
     public function __invoke(Request $request, Item $item): View|RedirectResponse
     {
-        $routeName = $request->route()->getName();
+        if ($item->type === 'Heading') {
+            $parent = $item->parent_id ? Item::find($item->parent_id) : null;
 
-        if ($routeName === 'todos.show') {
-            abort_if($item->type !== 'To-Do', 404);
-        } elseif ($routeName === 'projects.show') {
-            if ($item->type === 'Heading') {
-                $parent = $item->parent_id ? Item::find($item->parent_id) : null;
-                if ($parent) {
-                    return redirect()->route('projects.show', $parent);
-                }
-
-                abort(404);
+            if ($parent) {
+                return redirect()->route('projects.show', $parent);
             }
 
-            abort_if($item->type !== 'Project', 404);
+            abort(404);
         }
 
+        abort_if($item->type !== 'Project', 404);
+
         $notesHtml = null;
+
         if ($item->notes) {
             $converter = new CommonMarkConverter(['html_input' => 'strip', 'allow_unsafe_links' => false]);
             $notesHtml = $converter->convert($item->notes)->getContent();

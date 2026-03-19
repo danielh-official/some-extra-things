@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Actions;
 
+use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Native\Desktop\Facades\Settings;
 
 class ToggleTagEdits extends Controller
@@ -12,7 +12,7 @@ class ToggleTagEdits extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request): RedirectResponse
+    public function __invoke(): RedirectResponse
     {
         try {
             $current = Settings::get('allow_tag_edits', false);

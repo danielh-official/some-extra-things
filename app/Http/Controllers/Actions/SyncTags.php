@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Actions;
 
+use App\Http\Controllers\Controller;
 use App\Models\Tag;
 use App\Services\TagService;
 use Illuminate\Http\RedirectResponse;

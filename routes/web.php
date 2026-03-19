@@ -1,19 +1,20 @@
 <?php
 
-use App\Http\Controllers\AllItems;
-use App\Http\Controllers\AreaController;
-use App\Http\Controllers\DeleteAllItems;
-use App\Http\Controllers\Logbook;
-use App\Http\Controllers\PermanentlyDeleteTrashedItems;
-use App\Http\Controllers\SaveThemeSetting;
-use App\Http\Controllers\Settings;
-use App\Http\Controllers\ShowItem;
+use App\Http\Controllers\Actions\DeleteAllItems;
+use App\Http\Controllers\Actions\PermanentlyDeleteTrashedItems;
+use App\Http\Controllers\Actions\SaveThemeSetting;
+use App\Http\Controllers\Actions\SyncTags;
+use App\Http\Controllers\Actions\ToggleTagEdits;
+use App\Http\Controllers\Actions\TrashItem;
+use App\Http\Controllers\Pages\All;
+use App\Http\Controllers\Pages\Item\Area;
+use App\Http\Controllers\Pages\Item\Project;
+use App\Http\Controllers\Pages\Item\Todo;
+use App\Http\Controllers\Pages\Logbook;
+use App\Http\Controllers\Pages\Settings;
+use App\Http\Controllers\Pages\Trash;
 use App\Http\Controllers\SmartListController;
-use App\Http\Controllers\SyncTags;
 use App\Http\Controllers\TagController;
-use App\Http\Controllers\ToggleTagEdits;
-use App\Http\Controllers\Trash;
-use App\Http\Controllers\TrashItem;
 use Illuminate\Support\Facades\Route;
 
 // MARK: Redirects
@@ -21,8 +22,8 @@ Route::redirect('/', '/all');
 
 // MARK: All page routes
 Route::name('all.')->prefix('all')->group(function () {
-    Route::get('/', AllItems::class)->name('index');
-    Route::post('/kanban', [AllItems::class, 'toggleKanban'])->name('kanban');
+    Route::get('/', All::class)->name('index');
+    Route::post('/kanban', [All::class, 'toggleKanban'])->name('kanban');
 });
 
 // MARK: Smart list routes
@@ -55,9 +56,9 @@ Route::name('settings.')->prefix('settings')->group(function () {
 });
 
 // MARK: Item detail routes
-Route::get('/areas/{area}', [AreaController::class, 'show'])->name('areas.show');
-Route::get('/projects/{item}', ShowItem::class)->name('projects.show');
-Route::get('/todos/{item}', ShowItem::class)->name('todos.show');
+Route::get('/areas/{area}', Area::class)->name('areas.show');
+Route::get('/projects/{item}', Project::class)->name('projects.show');
+Route::get('/todos/{item}', Todo::class)->name('todos.show');
 
 // MARK: Item soft delete route
 Route::delete('/items/{item}/trash', TrashItem::class)->name('items.trash');

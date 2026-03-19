@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Pages\Item;
 
+use App\Http\Controllers\Controller;
 use App\Models\Item;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
-class AreaController extends Controller
+class Area extends Controller
 {
-    public function show(Request $request, Item $area): View
+    public function __invoke(Request $request, Item $area): View
     {
         abort_if($area->type !== 'Area', 404);
 

@@ -33,30 +33,19 @@ test('projects.show returns 404 for a Heading with no parent', function () {
     get(route('projects.show', $heading))->assertNotFound();
 });
 
-describe('child todos', function () {
-    test('passes child todos grouped by heading for a Project', function () {
-        $project = Item::factory()->create(['type' => 'Project']);
-        $child = Item::factory()->create([
-            'type' => 'To-Do',
-            'parent_id' => $project->id,
-            'status' => 'Open',
-            'heading' => null,
-            'is_trashed' => false,
-        ]);
+test('passes child todos grouped by heading for a Project', function () {
+    $project = Item::factory()->create(['type' => 'Project']);
+    $child = Item::factory()->create([
+        'type' => 'To-Do',
+        'parent_id' => $project->id,
+        'status' => 'Open',
+        'heading' => null,
+        'is_trashed' => false,
+    ]);
 
-        $response = get(route('projects.show', $project));
+    $response = get(route('projects.show', $project));
 
-        $childTodos = $response->viewData('childTodos');
-        expect($childTodos)->not->toBeNull();
-        expect($childTodos->flatten()->pluck('id'))->toContain($child->id);
-    });
-
-    test('childTodos is null for a To-Do item', function () {
-        $todo = Item::factory()->create(['type' => 'To-Do']);
-
-        $response = get(route('todos.show', $todo));
-
-        expect($response->viewData('childTodos'))->toBeNull();
-    });
-
+    $childTodos = $response->viewData('childTodos');
+    expect($childTodos)->not->toBeNull();
+    expect($childTodos->flatten()->pluck('id'))->toContain($child->id);
 });

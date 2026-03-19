@@ -120,7 +120,7 @@
             @endif
         </div>
 
-        @if ($childTodos && $childTodos->isNotEmpty())
+        @if (isset($childTodos) && $childTodos && $childTodos->isNotEmpty())
             <div class="flex flex-col gap-3 pt-4 border-t border-[#e5e5e5] dark:border-[#2a2a28]">
                 <span class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A]">To-Dos</span>
                 @foreach ($childTodos as $headingName => $todos)
