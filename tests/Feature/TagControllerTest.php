@@ -116,3 +116,31 @@ test('update sets parent_things_tag_id from parent tag things_id', function () {
     $tag->refresh();
     expect($tag->parent_things_tag_id)->toBe('parent-things-uuid');
 });
+
+// ─── Tag show invert ─────────────────────────────────────────────────────────
+
+test('tag show lists items with the tag by default', function () {
+    Settings::shouldReceive('get')->with('allow_tag_edits', false)->andReturn(false);
+
+    $tag = Tag::factory()->create();
+    $tagged = \App\Models\Item::factory()->create(['status' => 'Open']);
+    $untagged = \App\Models\Item::factory()->create(['status' => 'Open']);
+    $tagged->tags()->attach($tag->id);
+
+    get(route('tags.show', $tag->id))
+        ->assertSee($tagged->title)
+        ->assertDontSee($untagged->title);
+});
+
+test('tag show with invert=1 lists items without the tag', function () {
+    Settings::shouldReceive('get')->with('allow_tag_edits', false)->andReturn(false);
+
+    $tag = Tag::factory()->create();
+    $tagged = \App\Models\Item::factory()->create(['status' => 'Open']);
+    $untagged = \App\Models\Item::factory()->create(['status' => 'Open']);
+    $tagged->tags()->attach($tag->id);
+
+    get(route('tags.show', [$tag->id, 'invert' => 1]))
+        ->assertSee($untagged->title)
+        ->assertDontSee($tagged->title);
+});

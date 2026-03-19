@@ -15,9 +15,15 @@ class ShowTag extends Controller
     {
         $tagModel = Tag::where('id', $tag)->orWhere('things_id', $tag)->firstOrFail();
 
+        $invert = $request->boolean('invert');
+
+        $tagScope = $invert
+            ? 'whereDoesntHave'
+            : 'whereHas';
+
         $all = Item::notTrashed()
             ->where('status', 'Open')
-            ->whereHas('tags', fn ($q) => $q->where('tags.id', $tagModel->id))
+            ->$tagScope('tags', fn ($q) => $q->where('tags.id', $tagModel->id))
             ->orderBy('type')
             ->orderBy('creation_date')
             ->get();
@@ -37,6 +43,6 @@ class ShowTag extends Controller
             $allowTagEdits = session('allow_tag_edits', false);
         }
 
-        return view('tags.show', compact('tagModel', 'items', 'upcomingItems', 'somedayItems', 'allowTagEdits'));
+        return view('tags.show', compact('tagModel', 'items', 'upcomingItems', 'somedayItems', 'allowTagEdits', 'invert'));
     }
 }

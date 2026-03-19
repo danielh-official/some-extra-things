@@ -38,6 +38,10 @@
                 @endif
             </div>
             <div class="flex items-center gap-2">
+                <a href="{{ route('tags.show', [$tagModel->things_id ?? $tagModel->id, 'invert' => $invert ? 0 : 1]) }}"
+                    class="inline-block px-3 py-1 text-xs {{ $invert ? 'bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A] border border-black dark:border-[#eeeeec]' : 'bg-transparent text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:bg-[#f5f5f2] dark:hover:bg-[#161615]' }} rounded-sm leading-normal transition-all cursor-pointer">
+                    Invert
+                </a>
                 @if ($allowTagEdits)
                     <a href="{{ route('tags.edit', $tagModel->id) }}"
                         class="inline-block px-3 py-1 bg-transparent text-xs text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm hover:bg-[#f5f5f2] dark:hover:bg-[#161615] transition-all cursor-pointer">
@@ -59,7 +63,7 @@
         </div>
 
         @if ($items->isEmpty() && $upcomingItems->isEmpty() && $somedayItems->isEmpty())
-            <p class="text-[#706f6c] dark:text-[#A1A09A]">No items with this tag.</p>
+            <p class="text-[#706f6c] dark:text-[#A1A09A]">{{ $invert ? 'No items without this tag.' : 'No items with this tag.' }}</p>
         @else
             @foreach ($items as $type => $typeItems)
                 <div class="flex flex-col gap-2" x-show="matchesGroup($el)">
