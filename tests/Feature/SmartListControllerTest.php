@@ -106,6 +106,78 @@ test('can update a smart list', function () {
     ]);
 });
 
+test('index includes todayCount and anytimeCount in list entries', function () {
+    $tag = Tag::factory()->create();
+
+    $todayItem = Item::factory()->create([
+        'status' => 'Open',
+        'is_inbox' => false,
+        'is_logged' => false,
+        'start_date' => today(),
+        'start' => null,
+    ]);
+    $anytimeItem = Item::factory()->create([
+        'status' => 'Open',
+        'is_inbox' => false,
+        'is_logged' => false,
+        'start_date' => null,
+        'start' => null,
+    ]);
+    $somedayItem = Item::factory()->create([
+        'status' => 'Open',
+        'is_inbox' => false,
+        'is_logged' => false,
+        'start_date' => null,
+        'start' => 'Someday',
+    ]);
+
+    $todayItem->tags()->attach($tag->id);
+    $anytimeItem->tags()->attach($tag->id);
+    $somedayItem->tags()->attach($tag->id);
+
+    $list = SmartList::create([
+        'name' => 'Tagged',
+        'criteria' => ['type' => 'tag', 'tag' => $tag->name, 'operator' => 'equals'],
+    ]);
+
+    $entries = get(route('smart-lists.index'))->viewData('lists');
+
+    expect($entries[0]['count'])->toBe(3);
+    expect($entries[0]['todayCount'])->toBe(1);
+    expect($entries[0]['anytimeCount'])->toBe(1);
+});
+
+test('index shows today and anytime counts in the view', function () {
+    $tag = Tag::factory()->create();
+
+    $todayItem = Item::factory()->create([
+        'status' => 'Open',
+        'is_inbox' => false,
+        'is_logged' => false,
+        'start_date' => today(),
+        'start' => null,
+    ]);
+    $anytimeItem = Item::factory()->create([
+        'status' => 'Open',
+        'is_inbox' => false,
+        'is_logged' => false,
+        'start_date' => null,
+        'start' => null,
+    ]);
+
+    $todayItem->tags()->attach($tag->id);
+    $anytimeItem->tags()->attach($tag->id);
+
+    SmartList::create([
+        'name' => 'Tagged',
+        'criteria' => ['type' => 'tag', 'tag' => $tag->name, 'operator' => 'equals'],
+    ]);
+
+    get(route('smart-lists.index'))
+        ->assertSee('today')
+        ->assertSee('anytime');
+});
+
 test('can delete a smart list', function () {
     $smartList = SmartList::factory()->create();
 

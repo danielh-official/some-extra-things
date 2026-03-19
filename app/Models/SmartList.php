@@ -66,6 +66,32 @@ class SmartList extends Model
     }
 
     /**
+     * Get the count of matching items that fall into the Today bucket.
+     */
+    public function todayCount(): int
+    {
+        return $this->itemsQuery()
+            ->where('is_inbox', false)
+            ->where('is_logged', false)
+            ->whereNotNull('start_date')
+            ->whereDate('start_date', '<=', today())
+            ->count();
+    }
+
+    /**
+     * Get the count of matching items that fall into the Anytime bucket.
+     */
+    public function anytimeCount(): int
+    {
+        return $this->itemsQuery()
+            ->where('is_inbox', false)
+            ->where('is_logged', false)
+            ->whereNull('start_date')
+            ->where(fn (Builder $q) => $q->whereNull('start')->orWhere('start', '!=', 'Someday'))
+            ->count();
+    }
+
+    /**
      * Apply criteria tree to the given query.
      *
      * @param  array<string, mixed>  $node

@@ -45,6 +45,8 @@
                 /** @var \App\Models\SmartList $model */
                 $model = $entry['model'];
                 $count = $entry['count'];
+                $todayCount = $entry['todayCount'];
+                $anytimeCount = $entry['anytimeCount'];
             @endphp
             <div data-name="{{ $model->name }}" x-show="matchesItem($el)">
                 <a href="{{ route('smart-lists.show', $model) }}"
@@ -54,6 +56,12 @@
                             <span class="text-sm font-medium">{{ $model->name }}</span>
                             <span class="text-xs text-[#706f6c] dark:text-[#A1A09A]">
                                 {{ $count }} {{ Str::plural('item', $count) }}
+                                @if ($todayCount > 0)
+                                    | {{ $todayCount }} today
+                                @endif
+                                @if ($anytimeCount > 0)
+                                    | {{ $anytimeCount }} anytime
+                                @endif
                             </span>
                         </div>
                     </div>

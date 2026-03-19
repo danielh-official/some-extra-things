@@ -21,6 +21,8 @@ class SmartListController extends Controller
                 return [
                     'model' => $list,
                     'count' => $list->itemsCount(),
+                    'todayCount' => $list->todayCount(),
+                    'anytimeCount' => $list->anytimeCount(),
                 ];
             })
             ->sortByDesc('count')
@@ -147,7 +149,7 @@ class SmartListController extends Controller
         return view('smart-lists.create', [
             'smartList' => $copy,
             'heading' => 'Duplicate smart list',
-            'cancelLink' => route('smart-lists.show', $smartList)
+            'cancelLink' => route('smart-lists.show', $smartList),
         ]);
     }
 
