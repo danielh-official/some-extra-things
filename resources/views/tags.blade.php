@@ -3,6 +3,7 @@
         x-data="{
             search: '',
             open: false,
+            syncing: false,
             init() {
                 window.addEventListener('keydown', (e) => {
                     if (e.metaKey && e.key === 'f') {
@@ -23,6 +24,19 @@
             }
         }">
 
+        <div x-show="syncing" x-cloak
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 dark:bg-black/40">
+            <div class="flex items-center gap-3 rounded-lg bg-white dark:bg-[#1c1c1a] px-5 py-3 shadow-lg">
+                <svg class="size-4 animate-spin text-[#706f6c] dark:text-[#A1A09A]" xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                <span class="text-xs text-[#1b1b18] dark:text-[#EDEDEC]">Syncing from Things… Please wait for the import to finish.</span>
+            </div>
+        </div>
+
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <h1 class="text-sm font-medium">Tags</h1>
@@ -32,7 +46,7 @@
                     class="inline-block px-3 py-1 bg-transparent text-xs text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm hover:bg-[#f5f5f2] dark:hover:bg-[#161615] transition-all cursor-pointer">
                     {{ $sort === 'count_desc' ? 'Sort: Count ↓' : 'Sort: Name' }}
                 </a>
-                <form method="POST" action="{{ route('tags.sync') }}">
+                <form method="POST" action="{{ route('tags.sync') }}" @submit="syncing = true">
                     @csrf
                     <button type="submit"
                         class="inline-block px-3 py-1 bg-transparent text-xs text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm hover:bg-[#f5f5f2] dark:hover:bg-[#161615] transition-all cursor-pointer">
