@@ -25,3 +25,17 @@ test('ancestryPath returns full chain for a deeply nested tag', function () {
 
     expect($child->ancestryPath())->toBe('World > Europe');
 });
+
+test('tag has parent', function () {
+    $parent = Tag::factory()->create(['name' => 'Hello']);
+    $child = Tag::factory()->create(['name' => 'World', 'parent_tag_id' => $parent]);
+
+    expect($child->parentTag->id)->toBe($parent->id);
+});
+
+test('parent has children', function () {
+    $parent = Tag::factory()->create(['name' => 'Hello']);
+    $child = Tag::factory()->create(['name' => 'World', 'parent_tag_id' => $parent]);
+
+    expect($parent->childTags->pluck('id')->toArray())->toBe([$child->id]);
+});
