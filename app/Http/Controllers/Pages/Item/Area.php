@@ -20,8 +20,7 @@ class Area extends Controller
             ->orderBy('creation_date')
             ->get();
 
-        $isUpcoming = fn (Item $item): bool =>
-            $item->start !== 'Someday' && $item->start_date && $item->start_date->gt(today());
+        $isUpcoming = fn (Item $item): bool => $item->start !== 'Someday' && $item->start_date && $item->start_date->gt(today());
 
         $isSomeday = fn (Item $item): bool => $item->start === 'Someday';
 
