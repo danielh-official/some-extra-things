@@ -4,6 +4,7 @@
         @include('smart-lists.form', [
             'smartList' => $smartList,
             'heading' => 'New smart list',
+            'cancelLink' => $cancelLink ?? null
         ])
     </form>
 </x-layouts.app>

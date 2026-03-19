@@ -147,6 +147,7 @@ class SmartListController extends Controller
         return view('smart-lists.create', [
             'smartList' => $copy,
             'heading' => 'Duplicate smart list',
+            'cancelLink' => route('smart-lists.show', $smartList)
         ]);
     }
 
