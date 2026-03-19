@@ -1,6 +1,6 @@
 # Some Extra Things
 
-A Mac app for doing a few extra things with Things 3 (Cultured Code).
+A Mac app for doing a few extra things with Things 3 (@CulturedCode).
 
 For contributions, see [contributing guide](CONTRIBUTIONS.md).
 
