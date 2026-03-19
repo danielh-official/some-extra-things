@@ -115,6 +115,17 @@
                                     @endforeach
                                 </div>
                             @endforeach
+                        @elseif ($bucket === 'Logbook')
+                            @foreach ($items->sortByDesc('completion_date')->groupBy(fn ($item) => $item->completion_date?->toDateString() ?? 'Unknown') as $date => $dateItems)
+                                <div x-show="matchesGroup($el)">
+                                    <p class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A] mt-2 first:mt-0">{{ \Carbon\Carbon::parse($date)->format('M j, Y') }}</p>
+                                    @foreach ($dateItems as $item)
+                                        <div data-item-search data-title="{{ $item->title }}" data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)" class="min-w-0 truncate">
+                                            <x-item-row :item="$item" hide-tags />
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endforeach
                         @else
                             @foreach ($items as $item)
                                 <div data-item-search data-title="{{ $item->title }}" data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)" class="min-w-0 truncate">
@@ -152,6 +163,17 @@
                             @php $days = (int) today()->diffInDays(\Carbon\Carbon::parse($date)); @endphp
                             <div x-show="matchesGroup($el)">
                                 <p class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A] mt-2 first:mt-0">{{ \Carbon\Carbon::parse($date)->format('M j') }} <span class="font-normal">({{ $days === 1 ? 'Tomorrow' : $days.' days' }})</span></p>
+                                @foreach ($dateItems as $item)
+                                    <div data-item-search data-title="{{ $item->title }}" data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)">
+                                        <x-item-row :item="$item" />
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                    @elseif ($bucket === 'Logbook')
+                        @foreach ($items->sortByDesc('completion_date')->groupBy(fn ($item) => $item->completion_date?->toDateString() ?? 'Unknown') as $date => $dateItems)
+                            <div x-show="matchesGroup($el)">
+                                <p class="text-xs font-medium text-[#706f6c] dark:text-[#A1A09A] mt-2 first:mt-0">{{ \Carbon\Carbon::parse($date)->format('M j, Y') }}</p>
                                 @foreach ($dateItems as $item)
                                     <div data-item-search data-title="{{ $item->title }}" data-notes="{{ $item->notes ?? '' }}" x-show="matchesItem($el)">
                                         <x-item-row :item="$item" />

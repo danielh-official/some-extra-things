@@ -46,8 +46,6 @@ class SmartListController extends Controller
      */
     public function store(StoreSmartListRequest $request): RedirectResponse
     {
-        $smartList = SmartList::create($request->validated());
-
         return redirect()
             ->route('smart-lists.index')
             ->with('status', 'Smart list created.');
@@ -86,6 +84,10 @@ class SmartListController extends Controller
      */
     protected function bucket(Item $item): string
     {
+        if ($item->completion_date != null) {
+            return 'Logbook';
+        }
+
         if ($item->is_inbox) {
             return 'Inbox';
         }

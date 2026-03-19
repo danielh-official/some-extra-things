@@ -43,12 +43,10 @@ class SmartList extends Model
             $matchingIds = (clone $this->itemsQuery())->pluck('id');
 
             return Item::notTrashed()
-                ->where('status', 'Open')
                 ->whereNotIn('id', $matchingIds);
         }
 
-        $query = Item::notTrashed()
-            ->where('status', 'Open');
+        $query = Item::notTrashed();
 
         if (is_array($criteria) && $criteria !== []) {
             $this->applyCriteria($query, $criteria);
