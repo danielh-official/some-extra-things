@@ -220,3 +220,145 @@ test('can delete a smart list', function () {
         'id' => $smartList->id,
     ]);
 });
+
+// ─── create ──────────────────────────────────────────
+
+test('create renders the create view with an empty SmartList', function () {
+    $response = get(route('smart-lists.create'));
+
+    $response->assertSuccessful();
+    $smartList = $response->viewData('smartList');
+    expect($smartList)->toBeInstanceOf(SmartList::class);
+    expect($smartList->exists)->toBeFalse();
+});
+
+// ─── show ────────────────────────────────────────────
+
+test('show renders items grouped by bucket', function () {
+    $tag = Tag::factory()->create();
+
+    $item = Item::factory()->create([
+        'type' => 'To-Do',
+        'status' => 'Open',
+        'is_trashed' => false,
+        'is_inbox' => false,
+        'is_logged' => false,
+        'start_date' => null,
+        'start' => null,
+    ]);
+    $item->tags()->attach($tag->id);
+
+    $smartList = SmartList::create([
+        'name' => 'Tagged',
+        'criteria' => ['type' => 'tag', 'tag' => $tag->name, 'operator' => 'equals'],
+    ]);
+
+    $response = get(route('smart-lists.show', $smartList));
+
+    $response->assertSuccessful();
+    $grouped = $response->viewData('grouped');
+    $allItems = $grouped->flatten();
+    expect($allItems->pluck('id'))->toContain($item->id);
+});
+
+test('show excludes trashed items', function () {
+    $tag = Tag::factory()->create();
+
+    $trashed = Item::factory()->create([
+        'type' => 'To-Do',
+        'is_trashed' => true,
+    ]);
+    $trashed->tags()->attach($tag->id);
+
+    $smartList = SmartList::create([
+        'name' => 'Tagged',
+        'criteria' => ['type' => 'tag', 'tag' => $tag->name, 'operator' => 'equals'],
+    ]);
+
+    $response = get(route('smart-lists.show', $smartList));
+
+    $grouped = $response->viewData('grouped');
+    expect($grouped->flatten()->pluck('id'))->not->toContain($trashed->id);
+});
+
+// ─── edit ────────────────────────────────────────────
+
+test('edit renders the edit view with the smart list', function () {
+    $smartList = SmartList::factory()->create();
+
+    $response = get(route('smart-lists.edit', $smartList));
+
+    $response->assertSuccessful();
+    expect($response->viewData('smartList')->id)->toBe($smartList->id);
+});
+
+// ─── duplicate ───────────────────────────────────────
+
+test('duplicate renders the create view pre-filled with the source smart list data', function () {
+    $original = SmartList::factory()->create(['name' => 'Original List']);
+
+    $response = get(route('smart-lists.duplicate', $original));
+
+    $response->assertSuccessful();
+    $smartList = $response->viewData('smartList');
+    expect($smartList->name)->toBe('Original List');
+    expect($smartList->exists)->toBeFalse();
+});
+
+test('duplicate passes cancelLink pointing back to the source smart list', function () {
+    $original = SmartList::factory()->create();
+
+    $response = get(route('smart-lists.duplicate', $original));
+
+    expect($response->viewData('cancelLink'))->toBe(route('smart-lists.show', $original));
+});
+
+// ─── togglePin ───────────────────────────────────────
+
+test('togglePin sets is_pinned_to_sidebar to true when currently false', function () {
+    $smartList = SmartList::factory()->create(['is_pinned_to_sidebar' => false]);
+
+    post(route('smart-lists.pin', $smartList))
+        ->assertRedirect(route('smart-lists.show', $smartList));
+
+    assertDatabaseHas('smart_lists', [
+        'id' => $smartList->id,
+        'is_pinned_to_sidebar' => true,
+    ]);
+});
+
+test('togglePin sets is_pinned_to_sidebar to false when currently true', function () {
+    $smartList = SmartList::factory()->create(['is_pinned_to_sidebar' => true]);
+
+    post(route('smart-lists.pin', $smartList));
+
+    assertDatabaseHas('smart_lists', [
+        'id' => $smartList->id,
+        'is_pinned_to_sidebar' => false,
+    ]);
+});
+
+// ─── toggleKanban ────────────────────────────────────
+
+test('toggleKanban switches from vertical to horizontal', function () {
+    $smartList = SmartList::factory()->create(['kanban_view' => 'vertical']);
+
+    post(route('smart-lists.kanban', $smartList))
+        ->assertRedirect(route('smart-lists.show', $smartList));
+
+    assertDatabaseHas('smart_lists', [
+        'id' => $smartList->id,
+        'kanban_view' => 'horizontal',
+    ]);
+});
+
+test('toggleKanban switches from horizontal to vertical', function () {
+    $smartList = SmartList::factory()->create(['kanban_view' => 'horizontal']);
+
+    post(route('smart-lists.kanban', $smartList));
+
+    assertDatabaseHas('smart_lists', [
+        'id' => $smartList->id,
+        'kanban_view' => 'vertical',
+    ]);
+});

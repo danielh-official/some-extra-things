@@ -5,6 +5,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 
 use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
 
 uses(RefreshDatabase::class);
@@ -70,4 +71,24 @@ test('validation fails for invalid type', function () {
 
     $response->assertUnprocessable();
     $response->assertJsonValidationErrors(['type']);
+});
+
+// ─── index ───────────────────────────────────────────
+
+test('index returns all items as a JSON collection', function () {
+    $itemA = Item::factory()->create(['type' => 'To-Do', 'title' => 'Alpha']);
+    $itemB = Item::factory()->create(['type' => 'Project', 'title' => 'Beta']);
+
+    $response = getJson(route('api.items.index'));
+
+    $response->assertOk();
+    $response->assertJsonFragment(['id' => $itemA->id]);
+    $response->assertJsonFragment(['id' => $itemB->id]);
+});
+
+test('index returns empty collection when no items exist', function () {
+    $response = getJson(route('api.items.index'));
+
+    $response->assertOk();
+    $response->assertJson(['data' => []]);
 });
