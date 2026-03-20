@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Actions\DeleteAllItems;
 use App\Http\Controllers\Actions\GenerateApiToken;
+use App\Http\Controllers\Actions\ImportThings;
 use App\Http\Controllers\Actions\PermanentlyDeleteTrashedItems;
 use App\Http\Controllers\Actions\SaveThemeSetting;
 use App\Http\Controllers\Actions\SyncTags;
@@ -61,6 +62,9 @@ Route::name('settings.')->prefix('settings')->group(function () {
 Route::get('/areas/{area}', Area::class)->name('areas.show');
 Route::get('/projects/{item}', Project::class)->name('projects.show');
 Route::get('/todos/{item}', Todo::class)->name('todos.show');
+
+// MARK: Item import route
+Route::post('/items/import', ImportThings::class)->name('items.import');
 
 // MARK: Item soft delete route
 Route::delete('/items/{item}/trash', TrashItem::class)->name('items.trash');

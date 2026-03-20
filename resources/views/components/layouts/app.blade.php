@@ -66,7 +66,62 @@
             <x-sidebar-link href="{{ route('settings.index') }}" :active="request()->routeIs('settings')">Settings</x-sidebar-link>
         </div>
     </aside>
-    <div class="flex flex-col flex-1 overflow-hidden">
+    <div class="flex flex-col flex-1 overflow-hidden"
+        x-data="{
+            importing: false,
+            confirming: false,
+        }">
+
+        {{-- Confirm modal --}}
+        <div x-show="confirming" x-cloak
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 dark:bg-black/40">
+            <div class="flex flex-col gap-4 rounded-lg bg-white dark:bg-[#1c1c1a] px-6 py-5 shadow-lg w-80">
+                <p class="text-sm text-[#1b1b18] dark:text-[#EDEDEC]">Import active items from Things 3? This will update any existing items.</p>
+                <div class="flex justify-end gap-2">
+                    <button type="button" @click="confirming = false"
+                        class="px-3 py-1 text-xs text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm hover:bg-[#f5f5f2] dark:hover:bg-[#161615] transition-all cursor-pointer">
+                        Cancel
+                    </button>
+                    <button type="button" @click="confirming = false; importing = true; $refs.importForm.submit()"
+                        class="px-3 py-1 text-xs text-white bg-[#1b1b18] dark:bg-[#EDEDEC] dark:text-[#1b1b18] rounded-sm hover:opacity-80 transition-all cursor-pointer">
+                        Import
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {{-- Loading overlay --}}
+        <div x-show="importing" x-cloak
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 dark:bg-black/40">
+            <div class="flex items-center gap-3 rounded-lg bg-white dark:bg-[#1c1c1a] px-5 py-3 shadow-lg">
+                <svg class="size-4 animate-spin text-[#706f6c] dark:text-[#A1A09A]" xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                <span class="text-xs text-[#1b1b18] dark:text-[#EDEDEC]">Importing from Things 3… Please wait.</span>
+            </div>
+        </div>
+
+        {{-- Top bar --}}
+        <header class="border-b border-[#e5e5e5] dark:border-[#2a2a28] px-4 py-2 flex items-center justify-end gap-3 shrink-0">
+            @if (session('import_status'))
+                <p class="text-xs text-green-600 dark:text-green-400">{{ session('import_status') }}</p>
+            @endif
+            @if (session('import_error'))
+                <p class="text-xs text-red-600 dark:text-red-400">{{ session('import_error') }}</p>
+            @endif
+
+            <form x-ref="importForm" method="POST" action="{{ route('items.import') }}">
+                @csrf
+                <button type="button" @click="confirming = true"
+                    class="px-3 py-1 text-xs text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm hover:bg-[#f5f5f2] dark:hover:bg-[#161615] transition-all cursor-pointer">
+                    Import from Things
+                </button>
+            </form>
+        </header>
+
         <main id="main-content" class="overflow-y-auto p-4 w-full flex-1">
             {{ $slot }}
         </main>
