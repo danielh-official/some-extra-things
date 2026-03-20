@@ -2,13 +2,10 @@
 
 A Mac app for doing a few extra things with Things 3 (@CulturedCode).
 
+This project functions mainly as a flagship for experimenting with how Things 3 can be extended on the desktop. I'm open to ideas like extracting certain functionality into their own apps if the need arises.
+
 For contributions, see [contributing guide](CONTRIBUTIONS.md).
 
-## Sharing Things
+---
 
-1. Enable the local server via the settings
-2. Select each item in Things you want to share and use [this shortcut](https://www.icloud.com/shortcuts/c5630f873d8649b7974d325e98613c31) to send a POST request to the local server Some Extra Things is currently running
-
-## Screenshot
-
-![](/docs/images/smartlists.png)
+A dedicated page (https://danielhaven.com/some-extra-things) is being built for this concept. Will update when it's done.
