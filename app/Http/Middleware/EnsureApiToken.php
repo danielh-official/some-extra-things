@@ -16,18 +16,18 @@ class EnsureApiToken
     public function handle(Request $request, Closure $next): Response
     {
         try {
-            $storedToken = Settings::get('api_token', null);
+            $storedHash = Settings::get('api_token_hash', null);
         } catch (Exception) {
-            $storedToken = session('api_token');
+            $storedHash = session('api_token_hash');
         }
 
-        if (! $storedToken) {
+        if (! $storedHash) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         $bearerToken = $request->bearerToken();
 
-        if (! $bearerToken || ! hash_equals($storedToken, $bearerToken)) {
+        if (! $bearerToken || ! hash_equals($storedHash, hash('sha256', $bearerToken))) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 

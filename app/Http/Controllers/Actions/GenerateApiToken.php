@@ -15,13 +15,14 @@ class GenerateApiToken extends Controller
     public function __invoke(): RedirectResponse
     {
         $token = bin2hex(random_bytes(32));
+        $hash = hash('sha256', $token);
 
         try {
-            Settings::set('api_token', $token);
+            Settings::set('api_token_hash', $hash);
         } catch (Exception) {
-            session()->put('api_token', $token);
+            session()->put('api_token_hash', $hash);
         }
 
-        return redirect()->route('settings.index');
+        return redirect()->route('settings.index')->with('new_api_token', $token);
     }
 }

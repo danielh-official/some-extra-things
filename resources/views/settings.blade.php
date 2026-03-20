@@ -67,23 +67,28 @@
             x-data="{ copied: false }">
             <div class="flex flex-col gap-1">
                 <p class="text-[#706f6c] dark:text-[#A1A09A]">API Token</p>
-                @if ($apiToken)
+                @if ($newToken)
+                    <p class="text-xs text-amber-600 dark:text-amber-400">Copy this token now — you won't be able to see it again.</p>
                     <div class="flex items-center gap-2">
                         <code
-                            class="px-1.5 py-0.5 rounded-sm bg-[#fff2f2] dark:bg-[#1D0002] border border-[#e3e3e0] dark:border-[#3E3E3A] text-xs font-mono truncate max-w-full blur-sm text-transparent select-none">{{ $apiToken }}</code>
+                            class="px-1.5 py-0.5 rounded-sm bg-[#fff2f2] dark:bg-[#1D0002] border border-[#e3e3e0] dark:border-[#3E3E3A] text-xs font-mono">{{ $newToken }}</code>
                         <button type="button"
-                            @click="navigator.clipboard.writeText('{{ $apiToken }}'); copied = true; setTimeout(() => copied = false, 2000)"
+                            @click="navigator.clipboard.writeText('{{ $newToken }}'); copied = true; setTimeout(() => copied = false, 2000)"
                             class="inline-block px-3 py-1 text-xs rounded-sm leading-normal transition-all cursor-pointer bg-transparent text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:bg-[#f5f5f2] dark:hover:bg-[#161615]"
                             x-text="copied ? 'Copied!' : 'Copy'">
                         </button>
                     </div>
+                @elseif ($hasToken)
+                    <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">Token is set. Regenerate to replace it.</p>
+                @else
+                    <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">No token generated.</p>
                 @endif
             </div>
             <form method="POST" action="{{ route('settings.api-token.generate') }}">
                 @csrf
                 <button type="submit"
                     class="inline-block px-3 py-1 text-xs rounded-sm leading-normal transition-all cursor-pointer bg-transparent text-[#706f6c] dark:text-[#A1A09A] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:bg-[#f5f5f2] dark:hover:bg-[#161615]">
-                    {{ $apiToken ? 'Regenerate' : 'Generate' }}
+                    {{ $hasToken || $newToken ? 'Regenerate' : 'Generate' }}
                 </button>
             </form>
         </div>

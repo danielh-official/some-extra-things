@@ -16,13 +16,15 @@ class Settings extends Controller
         try {
             $theme = \Native\Desktop\Facades\Settings::get('theme', 'system');
             $allowTagEdits = \Native\Desktop\Facades\Settings::get('allow_tag_edits', false);
-            $apiToken = \Native\Desktop\Facades\Settings::get('api_token', null);
+            $hasToken = (bool) \Native\Desktop\Facades\Settings::get('api_token_hash', null);
         } catch (Exception $e) {
             $theme = session('theme', 'system');
             $allowTagEdits = session('allow_tag_edits', false);
-            $apiToken = session('api_token');
+            $hasToken = (bool) session('api_token_hash');
         }
 
-        return view('settings', compact('theme', 'allowTagEdits', 'apiToken'));
+        $newToken = session('new_api_token');
+
+        return view('settings', compact('theme', 'allowTagEdits', 'hasToken', 'newToken'));
     }
 }
