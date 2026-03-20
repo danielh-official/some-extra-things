@@ -111,12 +111,12 @@ tell application "Things3"
     set jsonParts to {}
 
     -- Each entry: {list name, start value (JSON), is_inbox (JSON), is_logged (JSON)}
-    set listNames to {"Inbox", "Today", "Anytime", "Someday"}
-    set listStarts to {"null", "\"On Date\"", "\"Anytime\"", "\"Someday\""}
-    set listIsInbox to {"true", "false", "false", "false"}
-    set listIsLogged to {"false", "false", "false", "false"}
+    set listNames to {"Inbox", "Today", "Anytime", "Someday", "Upcoming"}
+    set listStarts to {"null", "\"On Date\"", "\"Anytime\"", "\"Someday\"", "\"On Date\""}
+    set listIsInbox to {"true", "false", "false", "false", "false"}
+    set listIsLogged to {"false", "false", "false", "false", "false"}
 
-    repeat with cfgIdx from 1 to 4
+    repeat with cfgIdx from 1 to 5
         set listName to item cfgIdx of listNames
         set startVal to item cfgIdx of listStarts
         set isInboxVal to item cfgIdx of listIsInbox
