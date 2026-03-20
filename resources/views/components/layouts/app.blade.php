@@ -36,7 +36,7 @@
     <aside aria-label="Main navigation" class="border-r border-[#e5e5e5] dark:border-[#2a2a28] p-3 gap-1 flex flex-col w-64 h-full">
         <nav class="flex-1 overflow-y-auto flex flex-col gap-1">
             <div style="margin-bottom:16px;">
-                <x-sidebar-link href="{{ route('all.index') }}" :active="request()->routeIs('all')">All</x-sidebar-link>
+                <x-sidebar-link href="{{ route('all.index') }}" :active="request()->routeIs('all.*')">All</x-sidebar-link>
             </div>
 
             {{-- Smart Lists --}}
