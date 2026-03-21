@@ -1,3 +1,6 @@
+> [!NOTE]
+> README is a work in progress.
+
 # Some Extra Things
 
 A Mac app for doing a few extra things with Things 3 (@CulturedCode).
