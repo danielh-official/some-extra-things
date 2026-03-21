@@ -88,6 +88,8 @@ return [
         'content',
         'node_modules',
         '*/tests',
+        'docs',
+        'images'
     ],
 
     /**
