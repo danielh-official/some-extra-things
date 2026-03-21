@@ -6,6 +6,15 @@ This project functions mainly as a flagship for experimenting with how Things 3 
 
 For contributions, see [contributing guide](CONTRIBUTIONS.md).
 
----
+## About
 
-A dedicated page (https://danielhaven.com/some-extra-things) is being built for this concept. Will update when it's done.
+The app adds things that are not native to the Things 3 mac app such as:
+
+- All tasks view
+- Smart lists (filtering by and against tags)
+- Flat list tag editor with search
+
+<figure>
+    <img src="docs/images/All.png" alt="All todos and projects in one screen">
+    <figcaption>All todos and projects in one screen</figcaption>
+</figure>
