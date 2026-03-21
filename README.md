@@ -11,7 +11,7 @@ For contributions, see [contributing guide](CONTRIBUTIONS.md).
 
 ## About
 
-The app adds things that are not native to the Things 3 mac app such as:
+This app is designed to work with your existing Things 3 setup on Mac, while adding a few extra features that are not available, such as:
 
 ### All tasks view
 
