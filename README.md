@@ -3,7 +3,7 @@
 
 # Some Extra Things
 
-A Mac app for doing a few extra things with Things 3 (@CulturedCode).
+A Mac app for doing a few extra things with [Things 3 (@CulturedCode)](https://culturedcode.com/things/).
 
 This project functions mainly as a flagship for experimenting with how Things 3 can be extended on the desktop. I'm open to ideas like extracting certain functionality into their own apps if the need arises.
 
