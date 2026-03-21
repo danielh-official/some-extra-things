@@ -10,11 +10,36 @@ For contributions, see [contributing guide](CONTRIBUTIONS.md).
 
 The app adds things that are not native to the Things 3 mac app such as:
 
-- All tasks view
-- Smart lists (filtering by and against tags)
-- Flat list tag editor with search
+### All tasks view
 
-<figure>
-    <img src="docs/images/All.png" alt="All todos and projects in one screen">
-    <figcaption>All todos and projects in one screen</figcaption>
-</figure>
+![All todos and projects](docs/images/All.png)
+
+> All todos and projects in one screen
+
+### Smart lists (filtering by and against tags)
+
+![Smart list index view](docs/images/SmartList.index.png)
+
+![Smart list show view](docs/images/SmartList.show.png)
+
+> Organize todos and projects with smart lists that filter on or against tags (e.g., "get me all work items that aren't at my desk")
+
+![Smart list show view - horizontal](docs/images/SmartList.show.horizontal.png)
+
+> Switch to horizontal view for kanban experience
+
+![Smart list show view - inverted](docs/images/SmartList.show.invert.png)
+
+> Invert the filtering logic to view todos and projects that don't fit into the smart list
+
+### Flat list tag editor with search
+
+![Tag index](docs/images/Tag.index.png)
+
+![Tag index - search](docs/images/Tag.index.search.png)
+
+> Flattened tags list with search capabilities
+
+![Tag edit](docs/images/Tag.edit.png)
+
+> Update tag name and parent back to Things 3 (**note**: this requires enabling in the settings)
